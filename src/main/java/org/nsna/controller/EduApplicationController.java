@@ -8,6 +8,7 @@ import java.security.SecureRandom;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -83,13 +84,27 @@ public class EduApplicationController {
 				app.setBirthdate(lastApp.getBirthdate());
 				app.setLastName(lastApp.getLastName());
 				app.setFirstName(lastApp.getFirstName());
-			}
+				
+				//Code Added to Check if the Student was flagged for MultiYear scholarship in previous year
+				
+				int previousYear = Calendar.getInstance().get(Calendar.YEAR) - 1;
+				if(lastApp.getApplicationYear().trim().equals(Integer.toString(previousYear)) 
+						&& lastApp.getEduappProcessDetail().getMultiYearFlag().equals('Y')) {
+					app.setMultiYearFlag('Y');
+					/*
+					 * EduappProcessDetail appProcessDetail = new EduappProcessDetail();
+					 * appProcessDetail.setMultiYearFlag('Y');
+					 * app.setEduappProcessDetail(appProcessDetail);
+					 */
+				}
+				
 		}
 		// session.setAttribute("userName", principal.getName());
+	}
 		System.out.println(request.getRemoteAddr());
-
-	
+		
 		return app;
+	
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
@@ -100,13 +115,15 @@ public class EduApplicationController {
 			@RequestPart(value = "markSheet2", required = false) MultipartFile markSheet2,
 			@RequestPart(value = "tuitionReceipt1") MultipartFile tuitionReceipt1,
 			@RequestPart(value = "tuitionReceipt2", required = false) MultipartFile tuitionReceipt2,			
+			@RequestPart(value = "nonTuitionReceipt", required = false) MultipartFile nonTuitionReceipt,			
 			@RequestPart(value = "incomeProof") MultipartFile incomeProof,
 			@RequestPart(value = "nagaratharProof") MultipartFile nagaratharProof,
 			@RequestPart(value = "scholarshipLetter") MultipartFile scholarshipLetter,
+			@RequestPart(value = "bankPassBook") MultipartFile bankPassBook,
 			@RequestPart(value = "application") String applicationStr, HttpSession session) throws IOException {
 		
 		submitApplication(principal, request, photo, markSheet1, markSheet2, tuitionReceipt1, tuitionReceipt2, 
-				incomeProof, nagaratharProof, scholarshipLetter, applicationStr, session );
+				nonTuitionReceipt, incomeProof, nagaratharProof, scholarshipLetter,bankPassBook, applicationStr, session );
 	}
 	public void submitApplication(Principal principal, HttpServletRequest request,
 			MultipartFile photo,
@@ -114,9 +131,11 @@ public class EduApplicationController {
 			MultipartFile markSheet2,
 			MultipartFile tuitionReceipt1,
 			MultipartFile tuitionReceipt2,			
+			MultipartFile nonTuitionReceipt,			
 			MultipartFile incomeProof,
 			MultipartFile nagaratharProof,
 			MultipartFile scholarshipLetter,
+			MultipartFile bankPassBook,
 			String applicationStr, 
 			HttpSession session) throws IOException {
 
@@ -157,11 +176,11 @@ public class EduApplicationController {
 		application.setConfirmationNmbr(randomString(12));
 
 		logger.debug("--student id, confirmation nmbr generation successful");
-		
+			
 		if (photo != null) {
 			addAttachment(application, photo, "photo");
 		}
-		
+
 		addAttachment(application, markSheet1, "markSheet1");
 		
 		if (markSheet2 != null) {
@@ -171,9 +190,13 @@ public class EduApplicationController {
 		if (tuitionReceipt2 != null) {
 			addAttachment(application, tuitionReceipt2, "tuitionReceipt2");
 		}
+		if (nonTuitionReceipt != null) {
+			addAttachment(application, nonTuitionReceipt, "nonTuitionReceipt");
+		}
 		addAttachment(application, incomeProof, "incomeProof");
 		addAttachment(application, nagaratharProof, "nagaratharProof");
 		addAttachment(application, scholarshipLetter, "scholarshipLetter");
+		addAttachment(application, bankPassBook, "bankPassBook");
 
 		
 		EduappProcessDetail appProcessDetail = new EduappProcessDetail();
@@ -217,8 +240,8 @@ public class EduApplicationController {
 				+ "   border-collapse: collapse;" + " </style>"
 
 				+ "<p >Dear Applicant,</p> " + "<p >&nbsp; &nbsp;&nbsp;</p>"
-				+ "<p >&nbsp; &nbsp; &nbsp;"+ scholarshipOriginationService.getScholarshipOriginationLabel() +"has received your application for education scholarship. "
-				+ "All applications will be reviewed and scholarship awarded for candidates will be notified by"
+				+ "<p >&nbsp; &nbsp; &nbsp;"+ scholarshipOriginationService.getScholarshipOriginationLabel() +" has received your application for education scholarship. "
+				+ "All applications will be reviewed and scholarship awarded for candidates will be notified by "
 				+ eduappConfigList.get(0).getScholarshipAwardNotificationDate() + ". &nbsp;</p> "
 				+ "<p >&nbsp; &nbsp;&nbsp;</p> "
 				+ "<p >&nbsp; &nbsp; &nbsp; Please note your StudentID and application confirmation Number. It is important for you to provide these for any future communication.&nbsp;</p>"
@@ -235,9 +258,11 @@ public class EduApplicationController {
 				+ " Email: "+ scholarshipOriginationService.getEmail() +" </br>"
 				+ " Web Site: "+ scholarshipOriginationService.getWebsite() +" </p>"
 				+ "</body>";
+		
+		String emailSubject = scholarshipOriginationService.getScholarshipOriginationLabel() + " Education Application Confirmation";
 
 		try {
-			mailService.sendMail(application.getEmail(), htmlMessage, true);
+			mailService.sendMail(application.getEmail(), htmlMessage, true, emailSubject);
 		} catch(Exception ex){
 			logger.error(ex.getMessage());
 		}

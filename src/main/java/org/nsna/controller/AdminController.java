@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.nsna.domain.AppRank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,6 +53,9 @@ public class AdminController {
 
 	@Autowired
 	private ScholarshipOriginationService scholarshipOriginationService;
+	
+	@Value("${defaultUserPassword}")	
+	private  String defaultUserPassword;
 
 	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
 
@@ -83,14 +87,17 @@ public class AdminController {
 	@PreAuthorize("hasAuthority('admin')")	
 	@RequestMapping(value = "/rankApplication", method = RequestMethod.POST)
 	public void rankApplication() {
-		eduappProcesDetailRepository.setCurrentYearScores();
-		eduappProcesDetailRepository.setCurrentYearTotalScore();
+		eduappProcesDetailRepository.setCurrentYearScores(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
+		eduappProcesDetailRepository.setCurrentYearTotalScore(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		Query q = em.createNativeQuery(
 				"select rownum() Rank, EDUAPP_ID \"Edu_App_Id\"  from ( "
 				+ "		select TOTAL_SCORE, EDUAPP_ID "
 				+ "		from EDUAPP_PROCESS_DETAIL "
-				+ "		 WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG) and REGION = '"
-				+ scholarshipOriginationService.getScholarshipOriginationRegion() +"') "
+				+ "		 WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION ='"+
+				scholarshipOriginationService.getScholarshipOriginationRegion() 
+				+ "') and REGION = '" + scholarshipOriginationService.getScholarshipOriginationRegion() +"') "
 				+ "		     AND PROCESSING_STATUS IN ('ReviewComplete','Approved','Awarded') "
 				+ "		     AND TOTAL_SCORE  is NOT NULL "
 				+ "		order by TOTAL_SCORE  desc)  ", AppRank.class);
@@ -158,7 +165,7 @@ public class AdminController {
 			};
 			
 			//Set default Password
-			user.setPasswordHash(passwordEncoder.encode("Ch@ngeM3"));
+			user.setPasswordHash(passwordEncoder.encode(defaultUserPassword));
 			user.setRegion(scholarshipOriginationService.getScholarshipOriginationRegion());
 		}
 		userRepository.save(user);

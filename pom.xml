@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<version>1.5.1</version>
+	<version>1.6</version>
 
 	<repositories>
 	    <!--other repositories if any-->
@@ -13,6 +13,7 @@
 	        <url>file:${project.basedir}/repo</url>
 	    </repository>
 	</repositories>
+
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -25,8 +26,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 	</properties>
-	
-
 
 	<dependencies>
 	    <dependency>
@@ -96,6 +95,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+          <execution>
+            <id>copy-favicon</id>
+            <phase>package</phase>
+            <configuration>
+            <tasks>
+            <copy file="${project.basedir}/src/main/webapp/image/${region}favicon.png" tofile="${project.basedir}/src/main/webapp/image/favicon.png"/>
+            </tasks>
+            </configuration>
+          </execution>
+          </executions>				
 			</plugin>
 		</plugins>
 	</build>

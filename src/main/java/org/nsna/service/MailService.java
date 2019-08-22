@@ -48,7 +48,7 @@ public class MailService {
 	@Value("${org.nsna.mail.ccEmailId}")	
 	private  String ccEmailId;	
 
-	public  void sendMail(String toEmail, String emailMessage, boolean cc ) {
+	public  void sendMail(String toEmail, String emailMessage, boolean cc, String emailSubject) {
 		// Assuming you are sending email through relay.jangosmtp.net
 		//String host = "smtp.gmail.com"; //email-smtp.us-west-2.amazonaws.com		
 		
@@ -89,11 +89,13 @@ public class MailService {
 			message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
 			if (cc) {
 				message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmailId));
-			}
+			} 
+			
+				// Set Subject: header field
+				message.setSubject(emailSubject);
+			
 
-			// Set Subject: header field
-			message.setSubject(scholarshipOriginationService.getScholarshipOriginationLabel() + "Education Application Confirmation");
-
+			
 			// Now set the actual text message
 			//message.setText(emailMessage );
 			

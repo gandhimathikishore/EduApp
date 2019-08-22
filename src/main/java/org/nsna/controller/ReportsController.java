@@ -150,9 +150,10 @@ public class ReportsController {
 					+ " a.REVIEWER_PROCESSING_COMMENT   "
 					+ "  from  EDUAPP_PROCESS_DETAIL a "
 					+ " inner join EDUAPPLICATION on a.EDUAPP_ID = EDUAPPLICATION.ID "
-					+ " where EDUAPPLICATION.APPLICATION_YEAR = (select top 1 APP_YEAR from EDUAPP_CONFIG) "
-					+ "   and a.PROCESSING_STATUS = 'ReviewComplete' order by 2 desc"
-					+ " and a.REGION = '" + scholarshipOriginationService.getScholarshipOriginationRegion() +"'",
+					+ " where EDUAPPLICATION.APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION =' "
+					+ scholarshipOriginationService.getScholarshipOriginationRegion()
+					+ "') and a.PROCESSING_STATUS = 'ReviewComplete' and a.REGION = '"
+					+ scholarshipOriginationService.getScholarshipOriginationRegion() +"' order by 2 desc",
 					"HighAwardReview");
 		} else {
 			downloadDataAsCSV(response,"SELECT ''","blank");
@@ -182,7 +183,8 @@ public class ReportsController {
 						"  EDUAPPLICATION.EMAIL " + 
 						"  from  EDUAPP_PROCESS_DETAIL a " + 
 						" inner join EDUAPPLICATION on a.EDUAPP_ID = EDUAPPLICATION.ID " + 
-						" where EDUAPPLICATION.APPLICATION_YEAR = (select top 1 APP_YEAR from EDUAPP_CONFIG) " + 
+						" where EDUAPPLICATION.APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION ='" + 
+						scholarshipOriginationService.getScholarshipOriginationRegion() + "') " + 
 						" and EDUAPPLICATION.REGION = '" + scholarshipOriginationService.getScholarshipOriginationRegion() +"'"+ 
 						"   and a.PROCESSING_STATUS = 'Awarded' " + 
 						"    and a.CHECK_NUMBER = '" + awdref + "'" +						
@@ -290,7 +292,8 @@ public class ReportsController {
 
 				"	  from EDUAPPLICATION  " +
 				"	 inner join EDUAPP_PROCESS_DETAIL a on a.EDUAPP_ID = EDUAPPLICATION.ID " + 
-				"	where EDUAPPLICATION.APPLICATION_YEAR = (select top 1 APP_YEAR from EDUAPP_CONFIG) " + 
+				"	where EDUAPPLICATION.APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION ='" +
+				scholarshipOriginationService.getScholarshipOriginationRegion() + "') " + 
 				" and EDUAPPLICATION.REGION = '" + scholarshipOriginationService.getScholarshipOriginationRegion() +"'"+ 
 				"	 and a.PROCESSING_STATUS = 'Awarded' " +
 				"    and a.CHECK_NUMBER = '" + awdref + "'" +

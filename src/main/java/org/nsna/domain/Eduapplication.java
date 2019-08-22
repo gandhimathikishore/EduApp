@@ -72,6 +72,7 @@ public class Eduapplication implements java.io.Serializable {
 	private Short brothersCount;
 	private Short sistersCount;
 	private Short siblingsInSchool;
+	private Short siblingsInCollege;
 	private String nativeVillage;
 	private String kovilPirivu;
 	private String email;
@@ -87,6 +88,7 @@ public class Eduapplication implements java.io.Serializable {
 	private BigDecimal recentAggregatePercent;
 	private String recentAggregateIn;
 	private Integer annualTuitionFee;
+	private Integer nonTuitionFee;
 	private Integer annualFamilyIncome;
 	private String referenceName;
 	private String referencePhone;
@@ -112,7 +114,8 @@ public class Eduapplication implements java.io.Serializable {
 	private Set<EduappAttachment> eduappAttachments = new HashSet<EduappAttachment>(0);
 	private EduappProcessDetail eduappProcessDetail;
 	private String region;
-
+	private String selfSupport;
+	private Character multiYearFlag;
 	public Eduapplication() {
 	}
 
@@ -120,15 +123,15 @@ public class Eduapplication implements java.io.Serializable {
 			Character gender, String fathersName, String mothersName,
 			String fatherOccupation, String motherOccupation,
 			Short brothersCount, Short sistersCount,
-			Short siblingsInSchool, String nativeVillage, String kovilPirivu, String email, String phone1,
+			Short siblingsInSchool, Short siblingsInCollege, String nativeVillage, String kovilPirivu, String email, String phone1,
 			String addressLine1, String addressLine2, String city, String pin, String institutionName, String degree,
 			String specialization, String collegeYear, BigDecimal recentAggregatePercent, String recentAggregateIn,
-			Integer annualTuitionFee, Integer annualFamilyIncome, String referenceName, String referencePhone, String checkToName,
+			Integer annualTuitionFee, Integer nonTuitionFee, Integer annualFamilyIncome, String referenceName, String referencePhone, String checkToName,
 			Character acknowledgement, Date crTs, String remoteAddress, String userName, String accountHolderName,
 			String accountNumber, String bankName, String branchName, String branchIfscCode,
 			String bankSwiftCode, String branchAddressLine1, String branchAddressLine2, String branchAddressLine3,
 			Character phoneTypeMobile, String institutionCity, String otherScholarships,
-			String universityName, String universityRegisterNmbr, String region,
+			String universityName, String universityRegisterNmbr, String region, String selfSupport, Character multiYearFlag,
 			Set<EduappAttachment> eduappAttachments, EduappProcessDetail eduappProcessDetail) {
 		this.studentId = studentId;
 		this.applicationYear = applicationYear;
@@ -144,6 +147,7 @@ public class Eduapplication implements java.io.Serializable {
 		this.brothersCount = brothersCount;
 		this.sistersCount = sistersCount;
 		this.siblingsInSchool = siblingsInSchool;
+		this.siblingsInCollege = siblingsInCollege;
 		this.nativeVillage = nativeVillage;
 		this.kovilPirivu = kovilPirivu;
 		this.email = email;
@@ -159,6 +163,7 @@ public class Eduapplication implements java.io.Serializable {
 		this.recentAggregatePercent = recentAggregatePercent;
 		this.recentAggregateIn = recentAggregateIn;
 		this.annualTuitionFee = annualTuitionFee;
+		this.nonTuitionFee = nonTuitionFee;
 		this.annualFamilyIncome = annualFamilyIncome;
 		this.referenceName = referenceName;
 		this.referencePhone = referencePhone;
@@ -184,6 +189,9 @@ public class Eduapplication implements java.io.Serializable {
 		this.eduappAttachments = eduappAttachments;
 		this.eduappProcessDetail = eduappProcessDetail;
 		this.region = region;
+		this.selfSupport = selfSupport;
+		this.multiYearFlag = multiYearFlag;
+
 	}
 
 	@Id
@@ -328,6 +336,15 @@ public class Eduapplication implements java.io.Serializable {
 		this.siblingsInSchool = siblingsInSchool;
 	}
 
+	@Column(name = "SIBLINGS_IN_COLLEGE")
+	public Short getSiblingsInCollege() {
+		return this.siblingsInCollege;
+	}
+
+	public void setSiblingsInCollege(Short siblingsInCollege) {
+		this.siblingsInCollege = siblingsInCollege;
+	}
+
 	@Column(name = "NATIVE_VILLAGE", length = 80)
 	public String getNativeVillage() {
 		return this.nativeVillage;
@@ -461,6 +478,15 @@ public class Eduapplication implements java.io.Serializable {
 
 	public void setAnnualTuitionFee(Integer annualTuitionFee) {
 		this.annualTuitionFee = annualTuitionFee;
+	}
+
+	@Column(name = "NON_TUITION_FEE")
+	public Integer getNonTuitionFee() {
+		return this.nonTuitionFee;
+	}
+
+	public void setNonTuitionFee(Integer nonTuitionFee) {
+		this.nonTuitionFee = nonTuitionFee;
 	}
 
 	@Column(name = "ANNUAL_FAMILY_INCOME")
@@ -705,6 +731,18 @@ public class Eduapplication implements java.io.Serializable {
 	  }
 	  
 	  @Transient
+	  public long getBankPassBookAttachmentId() {
+		  for (EduappAttachment attachment : getEduappAttachments()){
+			  if (attachment.getDocumentCategory().equals("bankPassBook")) return attachment.getId();
+		  }
+		  return -1;
+	  }
+	  
+	  public void setBankPassBookAttachmentId(long id) {
+		  
+	  }
+	  
+	  @Transient
 	  public long getMarksheet1AttachmentId() {
 		  for (EduappAttachment attachment : getEduappAttachments()){
 			  if (attachment.getDocumentCategory().equals("markSheet1")) return attachment.getId();
@@ -753,6 +791,18 @@ public class Eduapplication implements java.io.Serializable {
 	  }		  
 	  
 	  @Transient
+	  public long getNonTuitionReceiptAttachmentId() {
+		  for (EduappAttachment attachment : getEduappAttachments()){
+			  if (attachment.getDocumentCategory().equals("nonTuitionReceipt")) return attachment.getId();
+		  }
+		  return -1;
+	  }
+
+	  public void setNonTuitionReceiptAttachmentId(long id) {
+		  
+	  }		  
+	  
+	  @Transient
 	  public long getIncomeProofAttachmentId() {
 		  for (EduappAttachment attachment : getEduappAttachments()){
 			  if (attachment.getDocumentCategory().equals("incomeProof")) return attachment.getId();
@@ -794,6 +844,25 @@ public class Eduapplication implements java.io.Serializable {
 		public void setRegion(String region) {
 			this.region = region;
 		}	
+
+		@Column(name = "SELF_SUPPORT", length = 3)
+		public String getSelfSupport() {
+			return this.selfSupport;
+		}
+
+		public void setSelfSupport(String selfSupport) {
+			this.selfSupport = selfSupport;
+		}
+
+		@Column(name = "MULTI_YEAR_FLAG")
+		public Character getMultiYearFlag() {
+			return this.multiYearFlag;
+		}
+
+		public void setMultiYearFlag(Character multiYearFlag) {
+			this.multiYearFlag = multiYearFlag;
+		}
+
 
 
 }

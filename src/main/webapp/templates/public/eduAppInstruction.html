@@ -50,11 +50,11 @@
 												<li>Polytechnic 1st year students should submit X marksheet.</li>
 												</ul>
 												</li> <br/>																							
-											<li>Authorized <strong>receipt for tuition fees
+											<li>Authorized <strong>receipt for tuition fees and non-tuition fees (hostel, mess, book, uniform & misc fee)
 												paid for {{eduappConfig.appYear}}</strong>.Bona-fide receipts will not be accepted.
 											</li><br/>
 											<li><strong>Proof of family income</strong> from a local
-												authority. This income proof should be dated <strong>{{eduappConfig.appYear}}</strong> and not
+												authority or the current employer. This income proof should be dated <strong>{{eduappConfig.appYear}}</strong> and not
 												dated earlier. Letters written by candidates or their
 												parents will not be accepted.</li><br/>
 											<li><strong>Letter from 
@@ -64,8 +64,11 @@
 												for the scholarship.</li><br/>
 											<li>A recent <strong> passport size photo.</strong> <u>It is optional</u>, although providing photos helps
 											    {{scholarshipOriginationInfo.scholarshipOriginationLabel}} raise more funds which in turn will make it
-											    possible to support more students. </li>											 
-										</ol>
+											    possible to support more students. </li><br/>	
+											<li> <strong>First page of your Bank savings book/statement</strong> to which you want the money deposited - the page need
+											    to show Account holder's name, Account number, Bank name  & Branch name that matches information you
+											     fill in the application. We do not need transaction information. </li>										
+								    </ol>
 									</div>
 									</li>
 							</div>
@@ -85,11 +88,11 @@
 													sheet</strong> issued by the educational institution that you
 												attend. Mark sheet should be dated <strong>March {{eduappConfig.appYear}}</strong> or later.
 												Computer printouts will not be accepted.</li><br/>
-											<li>Authorized <strong>receipt for tuition fees
+											<li>Authorized <strong>receipt for tuition fees and non-tuition fees (hostel, mess, book, uniform & misc fee)
 												paid for {{eduappConfig.appYear}}</strong>.Bona-fide receipts will not be accepted.
 											</li><br/>
 											<li><strong>Proof of family income</strong> from a local
-												authority. This income proof should be dated <strong>{{eduappConfig.appYear}}</strong> and not
+												authority or the current employer. This income proof should be dated <strong>{{eduappConfig.appYear}}</strong> and not
 												dated earlier. Letters written by candidates or their
 												parents will not be accepted.</li><br/>
 											<li><strong>Letter from 
@@ -99,7 +102,10 @@
 												for the scholarship.</li><br/>
 											<li>A recent <strong> passport size photo.</strong> <u>It is optional</u>, although providing photos helps
 											    {{scholarshipOriginationInfo.scholarshipOriginationLabel}} 
-											    raise more funds which in turn will make it possible to support more students. </li>	
+											    raise more funds which in turn will make it possible to support more students. </li><br/>	
+											<li> <strong>First page of your Bank savings book/statement</strong> to which you want the money deposited - the page need
+											    to show Account holder's name, Account number, Bank name  & Branch name that matches information you
+											     fill in the application. We do not need transaction information. </li>										
 										</ol>
 									</div></li>
 							</div>
@@ -117,10 +123,13 @@
 				</li>
 				<li>We encourage the candidates to apply online <strong>
 						by themselves </strong>, instead of asking their parents or friends to do
-					so.However, if the candidate does not have access to a computer or needs help with the instructions, the following resources are available:<br/>
+					so.
+					
+					<li ng-if="scholarshipOriginationInfo.scholarshipOriginationRegion == 'USA'"> If the candidate does not have access to a computer or needs help with the instructions, the following resources are available:<br/>
 						<ul><li><strong>Koviloor Madalaya Trust, Karaikudi:</strong><br/>Mr.Muruga Laxman<br/>Phone: 9443324220<br/></li>
 						<li><strong>NaNRI Association,Chennai:</strong><br/>Mr. Singaram Subramanian, Founder President<br/>Phone: 9150003330<br/></li>
 						</ul>
+					</li>
 				</li>
 				<li>You <strong>must provide all required information</strong>
 					in order for us to process your application. Failure to upload the

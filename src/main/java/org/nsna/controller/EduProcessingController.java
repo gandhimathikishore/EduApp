@@ -28,6 +28,7 @@ import org.nsna.service.ScholarshipOriginationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,6 +56,30 @@ public class EduProcessingController {
 	@Autowired
     private ScholarshipOriginationService scholarshipOriginationService;
 
+	@RequestMapping("/public/suser")
+	public String suser(@Param("uName") String uName) {
+		
+		try {
+		User sUser = userRepository.findByUserName(uName,
+				scholarshipOriginationService.getScholarshipOriginationRegion());
+				
+		logger.debug("Searched User Email"+ sUser.getUserEmail());
+		// clear the passwd before sending result to client.
+		// (passwd should not be sent back to client)
+		
+		if(sUser.getUserName() == null || sUser.getUserName().isEmpty()) {
+			uName="";
+		}
+		
+		} catch (Exception ex) {
+			logger.error("Inside User Search Exception Block: "+ ex.getMessage());
+			return "";
+		}
+		
+		return uName;
+		}
+	
+	
 	// used in authentication process (security)
 	@RequestMapping("/user")
 	public User user(Principal principle) {
@@ -145,8 +170,9 @@ public class EduProcessingController {
 						+"<a href=\""+ appUrl + "/eduMain.html#!/reset/" + user.getResetToken() +"\">"
 						+ appUrl + "/eduMain.html#!/reset/" + user.getResetToken() + "</a></p>";
 				
+				String emailSubject = "Password Reset Instructions";
 				try {
-					mailService.sendMail(userEmail, emailMessage, false);
+					mailService.sendMail(userEmail, emailMessage, false, emailSubject);
 				} catch(Exception ex){
 					logger.error(ex.getMessage());
 				}			
@@ -290,7 +316,8 @@ public class EduProcessingController {
 		List<EduappProcessDetail> appProcessingDetail = null;
 
 		if (confirmationNmbr != null && confirmationNmbr.length() > 0) {
-			appProcessingDetail = eduappProcesDetailRepository.findByApplicationNmbr(confirmationNmbr);
+			appProcessingDetail = eduappProcesDetailRepository.findByApplicationNmbr(confirmationNmbr,
+					scholarshipOriginationService.getScholarshipOriginationRegion());
 		} else {
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 			Date dob = null;
@@ -299,7 +326,8 @@ public class EduProcessingController {
 			} catch (Exception ex) {
 			}
 			;
-			appProcessingDetail = eduappProcesDetailRepository.findByStudentIdAndBirthdate(studentId, dob);
+			appProcessingDetail = eduappProcesDetailRepository.findByStudentIdAndBirthdate(studentId, dob,
+					scholarshipOriginationService.getScholarshipOriginationRegion());
 		}
 		
 		List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(

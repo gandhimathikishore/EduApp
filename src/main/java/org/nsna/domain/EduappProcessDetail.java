@@ -51,8 +51,9 @@ public class EduappProcessDetail implements java.io.Serializable {
 	private Short reviewerPrefPercent;
 	private String reviewerPrefComment;
 	private Character exception;
-	private Character reviewerReject;
 	private Character reviewComplete;
+	private Character reviewerReject;
+	private Character studentInOtherRegions;
 	private String reviewerProcessingComment;	
 	private Character rejected;	
 	private BigDecimal markScore;
@@ -87,6 +88,8 @@ public class EduappProcessDetail implements java.io.Serializable {
 	private Short reviewerPrefAC;
 	private Short reviewerPrefSS;
 	private Short reviewerPrefGP;
+	private Character multiYearFlag;
+
 	
 	public EduappProcessDetail() {
 	}
@@ -98,7 +101,7 @@ public class EduappProcessDetail implements java.io.Serializable {
 	public EduappProcessDetail(Eduapplication eduapplication, String reviewer, String processingStatus,
 			Character returningStudent, Character followupRequired, BigDecimal reviewedMarkPercent,
 			Integer reviewedAnnualFamilyIncome, Integer reviewedAnnualTutionFee, Short reviewedApplCompletePercent,
-			Short reviewerPrefPercent, String reviewerPrefComment, Character exception, Character reviewerReject,
+			Short reviewerPrefPercent, String reviewerPrefComment, Character exception, Character studentInOtherRegions, Character reviewerReject,
 			Character reviewComplete, String reviewerProcessingComment, Character rejected, BigDecimal markScore,
 			BigDecimal incomeScore, BigDecimal hardshipScore, BigDecimal appCompleteScore, BigDecimal reviewerScore,
 			BigDecimal totalScore, Short rank, Integer awardAmount, String checkNumber, String fundName, Date crTs,
@@ -106,7 +109,7 @@ public class EduappProcessDetail implements java.io.Serializable {
 			String pBeneficiaryAddressLine3, String pBeneficiaryAccountNumber, String pBankName,
 			String pBankSwiftCode, String pBranchIfscCode, String pBranchAddressLine1, String pBranchAddressLine2,
 			String pBranchAddressLine3, Character useSwift, Short reviewerPrefSB, Short reviewerPrefSP, Short reviewerPrefBL,
-			Short reviewerPrefAC, Short reviewerPrefSS, Short reviewerPrefGP) {
+			Short reviewerPrefAC, Short reviewerPrefSS, Short reviewerPrefGP, Character multiYearFlag) {
 		this.eduapplication = eduapplication;
 		this.reviewer = reviewer;
 		this.processingStatus = processingStatus;
@@ -119,6 +122,7 @@ public class EduappProcessDetail implements java.io.Serializable {
 		this.reviewerPrefPercent = reviewerPrefPercent;
 		this.reviewerPrefComment = reviewerPrefComment;
 		this.exception = exception;
+		this.studentInOtherRegions = studentInOtherRegions;
 		this.reviewerReject = reviewerReject;
 		this.reviewComplete = reviewComplete;
 		this.reviewerProcessingComment = reviewerProcessingComment;
@@ -153,6 +157,8 @@ public class EduappProcessDetail implements java.io.Serializable {
 		this.reviewerPrefAC = reviewerPrefAC;
 		this.reviewerPrefSS = reviewerPrefSS;
 		this.reviewerPrefGP = reviewerPrefGP;
+		this.multiYearFlag = multiYearFlag;
+
 	}
 	
 	@GenericGenerator(name = "generator", strategy = "foreign", parameters = @Parameter(name = "property", value = "eduapplication") )
@@ -280,6 +286,15 @@ public class EduappProcessDetail implements java.io.Serializable {
 
 	public void setException(Character exception) {
 		this.exception = exception;
+	}
+	
+	@Column(name = "STUDENT_IN_OTHER_REGIONS", length = 1)
+	public Character getStudentInOtherRegions() {
+		return this.studentInOtherRegions;
+	}
+
+	public void setStudentInOtherRegions(Character studentInOtherRegions) {
+		this.studentInOtherRegions = studentInOtherRegions;
 	}
 	
 	@Column(name = "REVIEWER_REJECT", length = 1)
@@ -603,6 +618,16 @@ public class EduappProcessDetail implements java.io.Serializable {
 		this.upTs = new Date();
 	}
 	
+	@Column(name = "MULTI_YEAR_FLAG")
+	public Character getMultiYearFlag() {
+		return this.multiYearFlag;
+	}
+
+	public void setMultiYearFlag(Character multiYearFlag) {
+		this.multiYearFlag = multiYearFlag;
+	}
+
+
 	@PreUpdate
 	void statusAndUpdatedAt() {
 		this.upTs = new Date();

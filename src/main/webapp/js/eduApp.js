@@ -248,9 +248,10 @@ eduApp.config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 	    	  console.log('/errors/401');
 		        // $location.path('/error/403');
 				// $state.go('accessDenied', {}, {location: false});
-	    	  	window.alert("Session Expired or Invalid Login. Please login!");
+	    	  	//window.alert("Session Expired or Invalid Login. Please login!");
 	    	  	delete $rootScope.authenticated;
 	    	  	delete window.sessionStorage.authenticated;
+	    	  	$rootScope.errMsg ="UserID/Password Incorrect";
 	    	  	console.log($injector.get('$rootScope').authenticated);
 	    	  	$rootScope.name = undefined;
 	    	  	$rootScope.userRole = undefined;
@@ -292,39 +293,55 @@ eduApp.controller('navCtrl',  function( $rootScope,  $http, $location, $state, $
 		})
 
 	var authenticate = function(credentials, callback) {
-		var headers = credentials ? {authorization : "Basic "
-		        + btoa(credentials.username + ":" + credentials.password)
-		} : {};
-	
-	    $http.get('user', {headers : headers}).then(function(response) {
-	      if (response.data.userName) {
-	    	$rootScope.name = response.data.userName;
-	    	$rootScope.userRole = response.data.userRole;
-	    	$rootScope.authenticated = true;
-	        
-	    	//store in windows session scope, so the values are available
-	    	// after page refresh
-	        $window.sessionStorage.userName = response.data.userName;
-	        $window.sessionStorage.userRole = response.data.userRole;
-	        $window.sessionStorage.authenticated = true;
-	      } else {
-	    	delete $rootScope.authenticated;
-	        delete $window.sessionStorage.authenticated;
-	      }
-	      callback && callback();
-	    }, function() {
-	    	delete $rootScope.authenticated;
-	        delete $window.sessionStorage.authenticated;
-	      callback && callback();
-	    });
-	
+		
+/*		  $http.get('/public/suser?uName='+ credentials.username)
+			.then(function(response) {
+				
+					$rootScope.errMsg ="User/Id Password is Incorrect";
+			    	delete $rootScope.authenticated;
+			        delete $window.sessionStorage.authenticated;
+				      callback && callback();				    
+				})*/
+
+		
+				var headers = credentials ? {authorization : "Basic "
+			        + btoa(credentials.username + ":" + credentials.password)
+			} : {};
+		
+		    $http.get('user', {headers : headers}).then(function(response) {
+		      if (response.data.userName) {
+		    	$rootScope.name = response.data.userName;
+		    	$rootScope.userRole = response.data.userRole;
+		    	$rootScope.authenticated = true;
+		    	$rootScope.errMsg ="";
+			        
+		    	//store in windows session scope, so the values are available
+		    	// after page refresh
+		        $window.sessionStorage.userName = response.data.userName;
+		        $window.sessionStorage.userRole = response.data.userRole;
+		        $window.sessionStorage.authenticated = true;
+		      } else {
+		    	delete $rootScope.authenticated;
+		        delete $window.sessionStorage.authenticated;
+		        $rootScope.errMsg ="User is not authorized for this portal";
+		      }
+		      callback && callback();
+		    }, function() {
+		    	delete $rootScope.authenticated;
+		        delete $window.sessionStorage.authenticated;
+		        $rootScope.errMsg ="UserID/Password Incorrect";
+		      callback && callback();
+		    });	
+		
 	  }
 
 	  //authenticate();
 		self.credentials = {};
 		self.login = function() {
 		  document.body.style.cursor='wait';
+		  				
 	      authenticate(self.credentials, function() {
+	    	  
 	        if ($rootScope.authenticated) {
 	        	$state.go('appProcessing');
 	          // $location.path("/");

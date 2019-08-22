@@ -754,9 +754,11 @@ eduApp.controller('EduApplicationCtrl', [
 							markSheet2 : $scope.markSheet2,
 							tuitionReceipt1 : $scope.tuitionReceipt1,
 							tuitionReceipt2 : $scope.tuitionReceipt2,						
+							nonTuitionReceipt : $scope.nonTuitionReceipt,						
 							incomeProof : $scope.incomeProof,
 							nagaratharProof : $scope.nagaratharProof,
 							scholarshipLetter : $scope.scholarshipLetter,
+							bankPassBook : $scope.bankPassBook,
 							application : angular.toJson($scope.appl)
 						}
 					});

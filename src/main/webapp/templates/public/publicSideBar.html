@@ -26,8 +26,16 @@
 </p>
 <p>
 	<!-- <a ui-sref="scholarshipApp.application">Apply for Scholarship</a>  -->
+ 	<div ng-if="scholarshipOriginationInfo.portalUsedFromYear != eduappConfig.appYear" >
 	<a data-toggle="modal" href="#newEduAppModal" class="button">Apply
 		for Scholarship</a>
+   </div>
+   
+   <div  ng-if="scholarshipOriginationInfo.portalUsedFromYear == eduappConfig.appYear"> 
+		<a data-ui-sref="scholarshipApp.application({oldStudent: 3, studentId: studentId2, birthDate: birthDate2})"
+						>Apply for Scholarship</a>
+   </div>
+	
 </p>
 <p>
 	<a data-toggle="modal" href="#checkStatusModal" class="button">Check
@@ -152,6 +160,7 @@
 	right: 10%
 }
 </style>
+
 <div id="newEduAppModal" class="modal fade left" role="dialog">
 	<div class="modal-dialog">
 
@@ -237,6 +246,7 @@
 		</div>
 	</div>
 </div>
+
 
 <!-- Update Application-SwiftCode Modal -->
 <div id="updateApplicationModal" class="modal fade left" role="dialog">

@@ -28,6 +28,12 @@ public class ScholarshipOriginationService {
 	@Value("${website}")
 	private  String website;	
 
+	@Value("${regionFullName}")
+	private  String regionFullName;	
+
+	@Value("${homePageURL}")
+	private  String homePageURL;	
+
 	public String getScholarshipOriginationRegion() {
 		return scholarshipOriginationRegion;
 	}	
@@ -50,5 +56,13 @@ public class ScholarshipOriginationService {
 
 	public String getWebsite() {
 		return website;
+	}	
+
+	public String getRegionFullName() {
+		return regionFullName;
+	}	
+
+	public String gethomePageURL() {
+		return homePageURL;
 	}	
 }
