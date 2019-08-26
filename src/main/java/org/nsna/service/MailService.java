@@ -13,12 +13,16 @@ import javax.mail.internet.MimeMessage;
 import org.nsna.controller.EduApplicationController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
 @Component
 public class MailService {
+	
+	@Autowired
+	private ScholarshipOriginationService scholarshipOriginationService;
 	
 	private static final Logger logger = LoggerFactory.getLogger(MailService.class);
 	
@@ -44,7 +48,7 @@ public class MailService {
 	@Value("${org.nsna.mail.ccEmailId}")	
 	private  String ccEmailId;	
 
-	public  void sendMail(String toEmail, String emailMessage, boolean cc ) {
+	public  void sendMail(String toEmail, String emailMessage, boolean cc, String emailSubject) {
 		// Assuming you are sending email through relay.jangosmtp.net
 		//String host = "smtp.gmail.com"; //email-smtp.us-west-2.amazonaws.com		
 		
@@ -52,7 +56,7 @@ public class MailService {
 		//final String password = "aishas21";// change accordingly
 
 		// Sender's email ID needs to be mentioned
-		String from = "noreply@achi.org";// change accordingly
+		String from = scholarshipOriginationService.getNoReplyEmail();// change accordingly
 
 		Properties props = new Properties();
 		/*
@@ -85,11 +89,13 @@ public class MailService {
 			message.addRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
 			if (cc) {
 				message.addRecipients(Message.RecipientType.CC, InternetAddress.parse(ccEmailId));
-			}
+			} 
+			
+				// Set Subject: header field
+				message.setSubject(emailSubject);
+			
 
-			// Set Subject: header field
-			message.setSubject("NSNA Education Application Confirmation");
-
+			
 			// Now set the actual text message
 			//message.setText(emailMessage );
 			

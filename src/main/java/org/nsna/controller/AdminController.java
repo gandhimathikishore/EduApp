@@ -1,6 +1,5 @@
 package org.nsna.controller;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,8 +17,12 @@ import org.nsna.domain.Eduapplication;
 import org.nsna.domain.EduapplicationRepository;
 import org.nsna.domain.User;
 import org.nsna.domain.UserRepository;
+import org.nsna.service.ScholarshipOriginationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.nsna.domain.AppRank;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -48,6 +51,14 @@ public class AdminController {
 	@Autowired
 	private EntityManager em;	
 
+	@Autowired
+	private ScholarshipOriginationService scholarshipOriginationService;
+	
+	@Value("${defaultUserPassword}")	
+	private  String defaultUserPassword;
+
+	private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
+
 	@PreAuthorize("hasAuthority('admin')")	
 	@RequestMapping(value = "/saveAppConfig", method = RequestMethod.POST)
 	public boolean saveAppConfig(@RequestBody EduappConfig eduappConfig) throws SQLException {
@@ -68,20 +79,25 @@ public class AdminController {
 	@PreAuthorize("hasAuthority('admin')")	
 	@RequestMapping(value = "/clearRanking", method = RequestMethod.POST)
 	public void clearRanking() {
-		eduappProcesDetailRepository.clearCurrentYearScoresAndRanking();
+		eduappProcesDetailRepository.clearCurrentYearScoresAndRanking(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 	}	
 	
 		
 	@PreAuthorize("hasAuthority('admin')")	
 	@RequestMapping(value = "/rankApplication", method = RequestMethod.POST)
 	public void rankApplication() {
-		eduappProcesDetailRepository.setCurrentYearScores();
-		eduappProcesDetailRepository.setCurrentYearTotalScore();
+		eduappProcesDetailRepository.setCurrentYearScores(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
+		eduappProcesDetailRepository.setCurrentYearTotalScore(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		Query q = em.createNativeQuery(
 				"select rownum() Rank, EDUAPP_ID \"Edu_App_Id\"  from ( "
 				+ "		select TOTAL_SCORE, EDUAPP_ID "
 				+ "		from EDUAPP_PROCESS_DETAIL "
-				+ "		 WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) "
+				+ "		 WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION ='"+
+				scholarshipOriginationService.getScholarshipOriginationRegion() 
+				+ "') and REGION = '" + scholarshipOriginationService.getScholarshipOriginationRegion() +"') "
 				+ "		     AND PROCESSING_STATUS IN ('ReviewComplete','Approved','Awarded') "
 				+ "		     AND TOTAL_SCORE  is NOT NULL "
 				+ "		order by TOTAL_SCORE  desc)  ", AppRank.class);
@@ -95,19 +111,22 @@ public class AdminController {
 	@PreAuthorize("hasAuthority('admin')")	
 	@RequestMapping(value = "/setDefaultAwardAmount", method = RequestMethod.POST)
 	public void setDefaultAwardAmount() {
-		eduappProcesDetailRepository.setDefaultAwardAmount();
+		eduappProcesDetailRepository.setDefaultAwardAmount(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 	}
 	
 	@PreAuthorize("hasAuthority('admin')")	
 	@RequestMapping(value = "/setStatusToAwardedForApprovedWithBankDetails", method = RequestMethod.POST)
 	public void setStatusToAwardedForApprovedWithBankDetails() {	
-		eduappProcesDetailRepository.setStatusToAwardedForApprovedWithBankDetails();
+		eduappProcesDetailRepository.setStatusToAwardedForApprovedWithBankDetails(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 	}
 	
 	@PreAuthorize("hasAuthority('admin')")	
 	@RequestMapping(value = "/loadApplicationsForAwdAdmin", method = RequestMethod.GET)
 	public List<Eduapplication> loadApplicationsForAwdAdmin() {
-		List<Eduapplication> results = eduapplicationRepository.findApplicationsForAwardAdmin();
+		List<Eduapplication> results = eduapplicationRepository.findApplicationsForAwardAdmin(
+				scholarshipOriginationService.getScholarshipOriginationRegion());
 		return results;
 	}	
 	
@@ -115,7 +134,9 @@ public class AdminController {
 	@PreAuthorize("hasAuthority('admin')")	
 	@RequestMapping(value = "/getUserMgmtList", method = RequestMethod.GET)
 	public List<User> getUserMgmtList() {
-		List<User> results = userRepository.findAllByOrderByEndDateAscUserNameAsc();
+
+		List<User> results = userRepository.findByRegionOrderByEndDateAscUserNameAsc(
+				 scholarshipOriginationService.getScholarshipOriginationRegion());
 		return results;
 
 	}	
@@ -144,7 +165,8 @@ public class AdminController {
 			};
 			
 			//Set default Password
-			user.setPasswordHash(passwordEncoder.encode("N$naEduUs3r"));
+			user.setPasswordHash(passwordEncoder.encode(defaultUserPassword));
+			user.setRegion(scholarshipOriginationService.getScholarshipOriginationRegion());
 		}
 		userRepository.save(user);
 		return 0;

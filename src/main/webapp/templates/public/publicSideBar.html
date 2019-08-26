@@ -26,8 +26,16 @@
 </p>
 <p>
 	<!-- <a ui-sref="scholarshipApp.application">Apply for Scholarship</a>  -->
+ 	<div ng-if="scholarshipOriginationInfo.portalUsedFromYear != eduappConfig.appYear" >
 	<a data-toggle="modal" href="#newEduAppModal" class="button">Apply
 		for Scholarship</a>
+   </div>
+   
+   <div  ng-if="scholarshipOriginationInfo.portalUsedFromYear == eduappConfig.appYear"> 
+		<a data-ui-sref="scholarshipApp.application({oldStudent: 3, studentId: studentId2, birthDate: birthDate2})"
+						>Apply for Scholarship</a>
+   </div>
+	
 </p>
 <p>
 	<a data-toggle="modal" href="#checkStatusModal" class="button">Check
@@ -132,7 +140,7 @@
 					ui-sref="scholarshipApp.status({confirmationNmbr: confirmationNmbr, studentId: studentId, birthDate: birthDate })"
 					data-dismiss="modal">Check Status</a> -->
 					<button type="button"
-						data-ui-sref="scholarshipApp.status({confirmationNmbr: confirmationNmbr, studentId: studentId, birthDate: birthDate })"
+						data-ui-sref="scholarshipApp.status({option: option, confirmationNmbr: confirmationNmbr, studentId: studentId, birthDate: birthDate })"
 						class="btn btn-success"
 						data-ng-disabled="StatusCheckInputForm.$invalid"
 						data-dismiss="modal">Check Status</button>
@@ -152,6 +160,7 @@
 	right: 10%
 }
 </style>
+
 <div id="newEduAppModal" class="modal fade left" role="dialog">
 	<div class="modal-dialog">
 
@@ -161,7 +170,7 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<h3 class="modal-title">Apply for Scholarship</h3>
 				<h4 data-ng_show="eduappConfig.eduappWindow">All returning
-					student should provide your NSNA StudentID. Failing to provide your
+					student should provide your {{scholarshipOriginationInfo.scholarshipOriginationLabel}} StudentID. Failing to provide your
 					StudentID may result in delay of your application processing.</h4>
 				<h4 data-ng_show="!eduappConfig.eduappWindow">
 					{{eduappConfig.appWindowClosedMessage}}</h4>
@@ -172,8 +181,8 @@
 
 					<div class="row">
 						<div class="col-sm-12">
-							Have you applied for scholarship with NSNA before / Do you have a
-							NSNA-StudentID? <label class="radio-inline"> <input
+							Have you applied for scholarship with {{scholarshipOriginationInfo.scholarshipOriginationLabel}} before / Do you have a
+							{{scholarshipOriginationInfo.scholarshipOriginationLabel}}-StudentID? <label class="radio-inline"> <input
 								type="radio" data-ng-model="oldStudent" name="oldStudentradio"
 								value="1" required>Yes
 							</label> <label class="radio-inline"><input type="radio"
@@ -207,7 +216,7 @@
 								</div>
 							</div>
 							<div class="col-sm-12">
-							Forgot your Student-ID? Send an email to <strong>nsna.edu@achi.org</strong> with your Name, Date of birth, Degree and College year when you last received scholarship from NSNA.
+							Forgot your Student-ID? Send an email to <strong>{{scholarshipOriginationInfo.email}}</strong> with your Name, Date of birth, Degree and College year when you last received scholarship from {{scholarshipOriginationInfo.scholarshipOriginationLabel}}.
 							</div>
 							
 						</div>
@@ -237,6 +246,7 @@
 		</div>
 	</div>
 </div>
+
 
 <!-- Update Application-SwiftCode Modal -->
 <div id="updateApplicationModal" class="modal fade left" role="dialog">
@@ -321,7 +331,7 @@
 								<div class="col-sm-12">
 								Hello <strong>{{step2Data.applicantName}}</strong>, 
 									<div data-ng-show="step2Data.recordFound == 1"> Please enter the Swift Code for your Bank branch:</div>
-									<div data-ng-show="step2Data.recordFound == 2"> Your Bank details with Swift Code is already in file. For any corrections please email nsnaedu@achi.org immediately.</div>
+									<div data-ng-show="step2Data.recordFound == 2"> Your Bank details with Swift Code is already in file. For any corrections please email {{scholarshipOriginationInfo.email}} immediately.</div>
 								</div>
 							</div>
 

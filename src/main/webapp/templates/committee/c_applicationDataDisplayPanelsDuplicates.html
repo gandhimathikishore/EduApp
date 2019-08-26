@@ -42,7 +42,7 @@
 					data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.incomeProofAttachmentId, $ctrl.displayAppl.region)"
 					class="btn btn-sm btn-primary">Income Proof</button>
 				</div>
-			</div> 
+			</div>
 			<div class="row row-eq-height">
 				<div class="col-sm-5">Annual Tuition Fee:</div>
 				<div class="col-sm-3">
@@ -57,10 +57,11 @@
 					<button data-ng-show="$ctrl.displayAppl.tuitionReceipt1AttachmentId != -1"
 						data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.tuitionReceipt1AttachmentId, $ctrl.displayAppl.region)"
 						class="btn btn-sm btn-primary">Fee Rcpt</button>
-					
+
 					<button data-ng-show="$ctrl.displayAppl.nonTuitionReceiptAttachmentId != -1"
 						data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.nonTuitionReceiptAttachmentId, $ctrl.displayAppl.region)"
 						class="btn btn-sm btn-primary">Non-Tuition Fee Rcpt</button>
+					
 				</div>
 			</div>
 			<div class="row row-eq-height">
@@ -69,7 +70,7 @@
 					<strong>(₹.) {{$ctrl.displayAppl.nonTuitionFee}}.00 </strong>
 				</div>
 			</div>
-			<br>
+			<br>			
 		<div class="row row-eq-height">
 			<div class="col-sm-5">Supporting docs:</div>
 			<div class="col-sm-7">
@@ -84,7 +85,7 @@
 
 			</div>
 		</div>
-	 <br>
+	 <br />
 			<div class="row row-eq-height">
 				<div class="col-sm-12">{{$ctrl.displayAppl.region}} Reference:
 					<strong>
@@ -147,13 +148,12 @@
 				</div>
 				<div class="col-sm-6">
 					<strong>{{$ctrl.displayAppl.siblingsInSchool}}</strong> siblings still in
-					School <br>
+					School, 
 					<strong>{{$ctrl.displayAppl.siblingsInCollege}}</strong> siblings still in
-					College
+					College.
 				</div>
 			</div>
 		</div>
-
 		<div class="col-sm-12 text-left">
 				Self Support: <strong>{{$ctrl.displayAppl.selfSupport}} </strong> <br />
 		</div>
@@ -182,15 +182,23 @@
 	<div class="panel-body">
 		<div class="col-sm-12 text-left">
 				Account Holder Name: <strong>{{$ctrl.displayAppl.checkToName}} </strong> <br>
-			<button data-ng-show="$ctrl.displayAppl.bankPassBookAttachmentId != -1"
-					 data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.bankPassBookAttachmentId, $ctrl.displayAppl.region)" 
+			<button data-ng-show="$ctrl.displayAppl.bankPassBook != -1"
+					 data-ng-click="$ctrl.downloadFile($ctrl.displayAppl.bankPassBook, $ctrl.displayAppl.region)" 
 					 class="btn btn-sm btn-primary pull-right">Bank Pass Book</button>
 				Bank: <strong>{{$ctrl.displayAppl.bankName}} </strong> <br>
 				Branch: <strong> {{$ctrl.displayAppl.branchName}} </strong> <br>
 				Account Number: <strong>{{$ctrl.displayAppl.accountNumber}} </strong> <br>
 				Branch IFSC Code: <strong>{{$ctrl.displayAppl.branchIfscCode}} </strong> <br>
-				Bank Swift Code: <strong>{{$ctrl.displayAppl.bankSwiftCode}} </strong> <br>								
-			
+				Bank Swift Code: <strong>{{$ctrl.displayAppl.bankSwiftCode}} </strong> <br>											
+		</div>
+	</div>
+</div>
+
+<div class="panel panel-success">
+	<div class="panel-heading">Reviewer's comment</div>
+	<div class="panel-body">
+		<div class="col-sm-12 text-left">
+				<strong>{{$ctrl.displayAppl.eduappProcessDetail.reviewerProcessingComment}} </strong> <br>			
 		</div>
 	</div>
 </div>

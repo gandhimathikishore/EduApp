@@ -238,6 +238,7 @@ eduApp.controller('EduAppProcessAppCtrl', function($scope, $http, $window, $stat
 		$scope.appl = data[0];
 		$scope.potentialDup = data[1];
 		$scope.potentialOtherYearApps = data[2];
+		$scope.potentialDupAcrossRegions = data[3];
 	}, function(error){
 		if(error.status === 401 || error.status === 403){
 			$state.go('accessDenied', {}, {location: false});
@@ -458,12 +459,12 @@ eduApp.controller('EduAppSearchCtrl', [
 				}
 			};
 
-			$scope.downloadFile = function(attachmentId) {
+			$scope.downloadFile = function(attachmentId, region) {
 
 				// $window.open($http.post('/downloadAttachment',attachmentId));
 				$window
 						.open('/downloadAttachment?attachmentId='
-								+ attachmentId);
+								+ attachmentId+'&region='+region);
 			};
 
 			$scope.submitEduApplProcessDetail = function(processDetail) {
@@ -596,8 +597,21 @@ eduApp.component('applicationDisplay', {
 		templateUrl: 'templates/committee/c_applicationDataDisplayPanels.html',
 		controller: function ($window) {
 			// function to download attachment 
-			this.downloadFile = function(attachmentId) {
-				$window.open('/downloadAttachment?attachmentId=' + attachmentId);
+			this.downloadFile = function(attachmentId, region) {
+				$window.open('/downloadAttachment?attachmentId=' + attachmentId
+						+'&region='+region);
 			};
 		}
+});
+
+eduApp.component('applicationDisplayDup', {
+	bindings: {displayApplDup: '<'},
+	templateUrl: 'templates/committee/c_applicationDataDisplayPanelsDuplicates.html',
+	controller: function ($window) {
+		// function to download attachment 
+		this.downloadFile = function(attachmentId, region) {
+			$window.open('/downloadAttachment?attachmentId=' + attachmentId
+					+'&region='+region);
+		};
+	}
 });

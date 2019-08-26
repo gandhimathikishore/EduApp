@@ -16,19 +16,23 @@ public interface EduappProcessDetailRepository extends JpaRepository<EduappProce
 	@Query(value = "select a.* from EDUAPP_PROCESS_DETAIL a "
 			  + "inner join EDUAPPLICATION b on a.EDUAPP_ID  = b.ID"
 			  + " where b.CONFIRMATION_NMBR = :applicationNmbr "
+			  + "  and b.region = :region"
 			  , nativeQuery = true)
 	List<EduappProcessDetail> findByApplicationNmbr(
-			@Param("applicationNmbr") String applicationNmbr);
+			@Param("applicationNmbr") String applicationNmbr,
+			@Param("region") String region);
 	
 	@Query(value = "select a.* from EDUAPP_PROCESS_DETAIL a "
 			  + "inner join EDUAPPLICATION b on a.EDUAPP_ID  = b.ID"
 			  + " where b.student_id = :studentId "
 			  + "  and b.birthdate = :birthdate"
+			  + "  and b.region = :region"
 			  + " order by b.APPLICATION_YEAR  desc"
 			  , nativeQuery = true)
 	List<EduappProcessDetail> findByStudentIdAndBirthdate(
 			@Param("studentId") String studentId,
-			@Param("birthdate") Date birthdate);	
+			@Param("birthdate") Date birthdate,
+			@Param("region") String region);	
 	
 	@Modifying
 	@Transactional
@@ -43,10 +47,10 @@ public interface EduappProcessDetailRepository extends JpaRepository<EduappProce
 					  "set MARK_SCORE = null, INCOME_SCORE = null, HARDSHIP_SCORE=null, " +
 					   	   " REVIEWER_SCORE = null, TOTAL_SCORE = null, " +
 					   	   " RANK = null " +
-					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) " +
+					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION = :region) and REGION = :region) " +
 						" AND RANK is NOT NULL" +
 						" AND PROCESSING_STATUS = 'ReviewComplete' ", nativeQuery = true)
-	int clearCurrentYearScoresAndRanking();	
+	int clearCurrentYearScoresAndRanking(@Param("region") String region);	
 	
 	@Modifying
 	@Transactional
@@ -60,41 +64,41 @@ public interface EduappProcessDetailRepository extends JpaRepository<EduappProce
 					  	         "else ((1.0*REVIEWED_ANNUAL_TUTION_FEE)/REVIEWED_ANNUAL_FAMILY_INCOME) end) as decimal(5,4))," + 
 					  	" REVIEWER_SCORE = cast(((isNull(REVIEWER_PREF_SB, 0) + isNull(REVIEWER_PREF_SP, 0) + isNULL(REVIEWER_PREF_BL, 0) + "+
 					  			  "isNull(REVIEWER_PREF_AC, 0) + isNull(REVIEWER_PREF_SS, 0) + isNull(REVIEWER_PREF_GP,0))/6.0) as decimal(5,4)) " +
-					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) " +
+					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION = :region) and REGION = :region) " +
 						" AND PROCESSING_STATUS = 'ReviewComplete' " /*+
 						" AND REVIEWER_PREF_PERCENT  <= 6"*/, nativeQuery = true)
-	int setCurrentYearScores();	
+	int setCurrentYearScores(@Param("region") String region);	
 	
 	@Modifying
 	@Transactional
 	@Query(value = "update EDUAPP_PROCESS_DETAIL  " +
 					  "     set TOTAL_SCORE = (MARK_SCORE * 0.45) + (HARDSHIP_SCORE * 0.2) + (INCOME_SCORE * 0.2) + (REVIEWER_SCORE * 0.15) " +
-					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) " +
+					" where EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION = :region) and REGION = :region) " +
 						" AND PROCESSING_STATUS = 'ReviewComplete' " /* +
 						" AND REVIEWER_PREF_PERCENT  <= 6"*/, nativeQuery = true)
-	int setCurrentYearTotalScore();		
+	int setCurrentYearTotalScore(@Param("region") String region);		
 	
 	@Modifying
 	@Transactional
 	@Query(value =	"update EDUAPP_PROCESS_DETAIL " +
-					"   set AWARD_AMOUNT  = (SELECT top 1 DEFAULT_AWARD_AMOUNT FROM EDUAPP_CONFIG), PROCESSING_STATUS = 'Approved' " +
-					" WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG)) " +
+					"   set AWARD_AMOUNT  = (SELECT DEFAULT_AWARD_AMOUNT FROM EDUAPP_CONFIG WHERE REGION = :region), PROCESSING_STATUS = 'Approved' " +
+					" WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION = :region) and REGION = :region) " +
 					"   AND PROCESSING_STATUS = 'ReviewComplete' ",
 					nativeQuery = true)
-	int setDefaultAwardAmount();
+	int setDefaultAwardAmount(@Param("region") String region);
 	
 	@Modifying
 	@Transactional
 	@Query(value =	"update EDUAPP_PROCESS_DETAIL " +
 					"   set CHECK_NUMBER = concat('EDUFX' , FORMATDATETIME(CURRENT_TIMESTAMP(), 'YYMMdd')), " +
 					"	PROCESSING_STATUS = 'Awarded' " +
-					" WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT top 1 APP_YEAR FROM EDUAPP_CONFIG) " +
-					"			AND EDUAPPLICATION.BRANCH_IFSC_CODE is not null) " +
+					" WHERE EDUAPP_ID IN (SELECT ID FROM EDUAPPLICATION WHERE APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG  WHERE REGION = :region) " +
+					"			AND EDUAPPLICATION.BRANCH_IFSC_CODE is not null and REGION = :region) " +
 					"   AND PROCESSING_STATUS = 'Approved' " +
 					"   AND NOT ( " +
 					"     (USE_SWIFT = 'Y' and not (length(isNull(P_BANK_SWIFT_CODE,''))  in (8, 11)) ) OR " +
 					"     (isNull(USE_SWIFT,'N') = 'N' and  (length(isNull(P_BRANCH_ADDRESS_LINE1,'')) = 0 or length(isNull(P_BRANCH_ADDRESS_LINE3,'')) = 0) )) ",
 					nativeQuery = true)
-	int setStatusToAwardedForApprovedWithBankDetails();
+	int setStatusToAwardedForApprovedWithBankDetails(@Param("region") String region);
 	
 }
