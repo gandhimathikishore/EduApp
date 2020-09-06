@@ -123,7 +123,7 @@
 					 class="btn btn-sm btn-primary pull-right">Photo</button>
 		</div>
 		<div class="col-sm-12 text-left">
-			
+
 				Native: <strong>{{$ctrl.displayAppl.nativeVillage}} </strong> <br />
 				Kovil: <strong> {{$ctrl.displayAppl.kovilPirivu}} </strong>
 			
@@ -133,11 +133,13 @@
 			<div class="row">
 				<div class="col-sm-6">
 					Father: <strong>{{ $ctrl.displayAppl.fathersName}} </strong><br />
-					<strong>{{ $ctrl.displayAppl.fatherOccupation}} </strong>
+					Occupation: <strong>{{ $ctrl.displayAppl.fatherOccupation}} </strong><br />
+					Education: <strong>{{ $ctrl.displayAppl.fatherEducation}}</strong>
 				</div>
 				<div class="col-sm-6">
 					Mother: <strong>{{ $ctrl.displayAppl.mothersName}} </strong><br />
-					<strong>{{ $ctrl.displayAppl.motherOccupation}} </strong>
+					Occupation: <strong>{{ $ctrl.displayAppl.motherOccupation}} </strong><br />
+					Education: <strong>{{ $ctrl.displayAppl.fatherEducation}} </strong>
 				</div>
 			</div>
 			<div class="row">
@@ -154,8 +156,15 @@
 			</div>
 		</div>
 
+		<div class=" col-sm-12 text-left">
+			<br />
+		</div>
 		<div class="col-sm-12 text-left">
-				Self Support: <strong>{{$ctrl.displayAppl.selfSupport}} </strong> <br />
+			I'm the first person in my family to attend
+			college or an institution: <strong>{{$ctrl.displayAppl.firstOneInCollege}} </strong> <br />
+		</div>
+		<div class="col-sm-12 text-left">
+			I do work part/full time to support my education: <strong>{{$ctrl.displayAppl.selfSupport}} </strong> <br />
 		</div>
 
 	</div>
