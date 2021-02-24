@@ -68,11 +68,14 @@ public class Eduapplication implements java.io.Serializable {
 	private String fathersName;
 	private String mothersName;
 	private String fatherOccupation;
-	private String motherOccupation;	
+	private String motherOccupation;
+    private String fatherEducation;
+    private String motherEducation;
 	private Short brothersCount;
 	private Short sistersCount;
 	private Short siblingsInSchool;
 	private Short siblingsInCollege;
+	private String firstOneInCollege;
 	private String nativeVillage;
 	private String kovilPirivu;
 	private String email;
@@ -121,8 +124,8 @@ public class Eduapplication implements java.io.Serializable {
 
 	public Eduapplication(String studentId, String applicationYear, String confirmationNmbr, String lastName, String firstName, Date birthdate,
 			Character gender, String fathersName, String mothersName,
-			String fatherOccupation, String motherOccupation,
-			Short brothersCount, Short sistersCount,
+			String fatherOccupation, String motherOccupation, String fatherEducation, String motherEducation,
+			Short brothersCount, Short sistersCount, String firstOneInCollege,
 			Short siblingsInSchool, Short siblingsInCollege, String nativeVillage, String kovilPirivu, String email, String phone1,
 			String addressLine1, String addressLine2, String city, String pin, String institutionName, String degree,
 			String specialization, String collegeYear, BigDecimal recentAggregatePercent, String recentAggregateIn,
@@ -143,11 +146,14 @@ public class Eduapplication implements java.io.Serializable {
 		this.fathersName = fathersName;
 		this.mothersName = mothersName;
 		this.setFatherOccupation(fatherOccupation);
-		this.setMotherOccupation(motherOccupation);		
+		this.setMotherOccupation(motherOccupation);
+		this.fatherEducation = fatherEducation;
+		this.motherEducation = motherEducation;
 		this.brothersCount = brothersCount;
 		this.sistersCount = sistersCount;
 		this.siblingsInSchool = siblingsInSchool;
 		this.siblingsInCollege = siblingsInCollege;
+		this.firstOneInCollege = firstOneInCollege;
 		this.nativeVillage = nativeVillage;
 		this.kovilPirivu = kovilPirivu;
 		this.email = email;
@@ -306,9 +312,18 @@ public class Eduapplication implements java.io.Serializable {
 
 	public void setMotherOccupation(String motherOccupation) {
 		this.motherOccupation = motherOccupation;
-	}	
-	
-	
+	}
+
+	@Column(name = "FATHER_EDUCATION", length = 70)
+	public String getFatherEducation() { return fatherEducation; }
+
+	public void setFatherEducation(String fatherEducation) { this.fatherEducation = fatherEducation; }
+
+	@Column(name = "MOTHER_EDUCATION", length = 70)
+	public String getMotherEducation() { return motherEducation; }
+
+	public void setMotherEducation(String motherEducation) { this.motherEducation = motherEducation; }
+
 	@Column(name = "BROTHERS_COUNT")
 	public Short getBrothersCount() {
 		return this.brothersCount;
@@ -344,6 +359,11 @@ public class Eduapplication implements java.io.Serializable {
 	public void setSiblingsInCollege(Short siblingsInCollege) {
 		this.siblingsInCollege = siblingsInCollege;
 	}
+
+	@Column(name = "FIRST_ONE_IN_COLLEGE")
+	public String getFirstOneInCollege() { return firstOneInCollege; }
+
+	public void setFirstOneInCollege(String firstOneInCollege) { this.firstOneInCollege = firstOneInCollege; }
 
 	@Column(name = "NATIVE_VILLAGE", length = 80)
 	public String getNativeVillage() {

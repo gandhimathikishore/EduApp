@@ -477,11 +477,11 @@ eduApp.controller('EduApplicationCtrl', [
 			};
 			
 			$scope.motherOccupOptionsConfig = {
-					create : true,
-					maxItems : 1,
-					highlight : true,
-					placeholder : "Select/Type Mother's Occupaion (profession, job)"
-				};			
+                create : true,
+                maxItems : 1,
+                highlight : true,
+                placeholder : "Select/Type Mother's Occupaion (profession, job)"
+            };
 			
 			$scope.occupationOptions = [ {
 				value : 'Unemployed',
@@ -595,7 +595,37 @@ eduApp.controller('EduApplicationCtrl', [
 				value : 'Writer',
 				text : 'Writer'					
 			}];				
-			
+
+			$scope.fatherEducationOptionsConfig = {
+                create : true,
+                maxItems : 1,
+                highlight : true,
+                placeholder : "Select/Type Father's Education level"
+            };
+
+            $scope.motherEducationOptionsConfig = {
+                create : true,
+                maxItems : 1,
+                highlight : true,
+                placeholder : "Select/Type Father's Education level"
+            };
+
+            $scope.educationOptions = [ {
+                value : 'Did not have an opportunity to attend formal schooling',
+                text : 'Did not have an opportunity to attend formal schooling'
+            }, {
+                value : 'Graduated from high-school',
+                text : 'Graduated from high-school'
+            }, {
+                value : 'Polytechnic or vocational certification (or, Diploma)',
+                text : 'Polytechnic or vocational certification (or, Diploma)'
+            }, {
+                value : 'Three-year college degree (for example, B.Sc, B.Com, B.A., etc.)',
+                text : 'Three-year college degree (for example, B.Sc, B.Com, B.A., etc.)'
+            }, {
+                value : 'Four-year college degree (for example, B.E., B. Tech., etc.) or higher',
+                text : 'Four-year college degree (for example, B.E., B. Tech., etc.) or higher'
+            }];
 			
 			$scope.degreeOptionsConfig = {
 					create : true,
