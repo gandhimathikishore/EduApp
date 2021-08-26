@@ -39,463 +39,462 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class EduProcessingController {
-	private static final Logger logger = LoggerFactory.getLogger(EduProcessingController.class);
-	
-	@Autowired
-	private EduapplicationRepository eduapplicationRepository;
-	@Autowired
-	private EduappProcessDetailRepository eduappProcesDetailRepository;
-	@Autowired
-	private EduappConfigRepository eduappConfigRepository;	
-	@Autowired
-	private UserRepository userRepository;
-	@Autowired	
-	private MailService mailService;	
-	@Autowired
-	private EntityManager em;
-	@Autowired
+    private static final Logger logger = LoggerFactory.getLogger(EduProcessingController.class);
+
+    @Autowired
+    private EduapplicationRepository eduapplicationRepository;
+    @Autowired
+    private EduappProcessDetailRepository eduappProcesDetailRepository;
+    @Autowired
+    private EduappConfigRepository eduappConfigRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private MailService mailService;
+    @Autowired
+    private EntityManager em;
+    @Autowired
     private ScholarshipOriginationService scholarshipOriginationService;
 
-	@RequestMapping("/public/suser")
-	public String suser(@Param("uName") String uName) {
-		
-		try {
-		User sUser = userRepository.findByUserName(uName,
-				scholarshipOriginationService.getScholarshipOriginationRegion());
-				
-		logger.debug("Searched User Email"+ sUser.getUserEmail());
-		// clear the passwd before sending result to client.
-		// (passwd should not be sent back to client)
-		
-		if(sUser.getUserName() == null || sUser.getUserName().isEmpty()) {
-			uName="";
-		}
-		
-		} catch (Exception ex) {
-			logger.error("Inside User Search Exception Block: "+ ex.getMessage());
-			return "";
-		}
-		
-		return uName;
-		}
-	
-	
-	// used in authentication process (security)
-	@RequestMapping("/user")
-	public User user(Principal principle) {
-		logger.debug("Inside User request. Name: "+ principle.getName());
-		try {
-		User loginUser = userRepository.findByUserName(principle.getName(),
-				scholarshipOriginationService.getScholarshipOriginationRegion());
-				
-		logger.debug("Searched User Email"+ loginUser.getUserEmail());
-		// clear the passwd before sending result to client.
-		// (passwd should not be sent back to client)
-		loginUser.setPasswordHash(null);
-		return loginUser;
-		} catch (Exception ex) {
-			logger.error("Inside User Search Exception Block: "+ ex.getMessage());
-			return null;
-		}
-	}
+    @RequestMapping("/public/suser")
+    public String suser(@Param("uName") String uName) {
 
-	// used to retrieve the scholarshipOriginationInfo
-	@RequestMapping(value = "/public/scholarshipOriginationInfo", method = RequestMethod.GET)
-	public ScholarshipOriginationService getScholarshipOriginationInfo() {
-		
-		return scholarshipOriginationService;
-	}
+        try {
+            User sUser = userRepository.findByUserName(uName,
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
 
-	//return non ended, non hidden users
-	@RequestMapping(value = "/getActiveUsers", method = RequestMethod.GET)
-	public List<User> getActiveUsers() {
-		List<User> results = userRepository.findActiveUsers(
-				scholarshipOriginationService.getScholarshipOriginationRegion());
-		return results;
-	}
+            logger.debug("Searched User Email" + sUser.getUserEmail());
+            // clear the passwd before sending result to client.
+            // (passwd should not be sent back to client)
 
-	@RequestMapping(value = "/confirmChangePasswd", method = RequestMethod.POST)
-	public boolean confirmChangePasswd(Principal principle, @RequestBody ChangePasswdModal changePasswdModel) {
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		User loginUser = userRepository.findByUserName(principle.getName());
-		// if the provided current password match password in the db for the
-		// user, then reset the password to new one provided.
-		if (passwordEncoder.matches(changePasswdModel.getCurrentPasswd(), loginUser.getPasswordHash())) {
-			// if
-			// (loginUser.getPasswordHash().equals(changePasswdModel.getCurrentPasswd()))
-			// {
-			loginUser.setPasswordHash(passwordEncoder.encode(changePasswdModel.getNewPasswd()));
-			userRepository.save(loginUser);
-		} else {
-			return false;
-		}
-		return true;
-	}
-	
+            if (sUser.getUserName() == null || sUser.getUserName().isEmpty()) {
+                uName = "";
+            }
+
+        } catch (Exception ex) {
+            logger.error("Inside User Search Exception Block: " + ex.getMessage());
+            return "";
+        }
+
+        return uName;
+    }
+
+
+    // used in authentication process (security)
+    @RequestMapping("/user")
+    public User user(Principal principle) {
+        logger.debug("Inside User request. Name: " + principle.getName());
+        try {
+            User loginUser = userRepository.findByUserName(principle.getName(),
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
+
+            logger.debug("Searched User Email" + loginUser.getUserEmail());
+            // clear the passwd before sending result to client.
+            // (passwd should not be sent back to client)
+            loginUser.setPasswordHash(null);
+            return loginUser;
+        } catch (Exception ex) {
+            logger.error("Inside User Search Exception Block: " + ex.getMessage());
+            return null;
+        }
+    }
+
+    // used to retrieve the scholarshipOriginationInfo
+    @RequestMapping(value = "/public/scholarshipOriginationInfo", method = RequestMethod.GET)
+    public ScholarshipOriginationService getScholarshipOriginationInfo() {
+
+        return scholarshipOriginationService;
+    }
+
+    //return non ended, non hidden users
+    @RequestMapping(value = "/getActiveUsers", method = RequestMethod.GET)
+    public List<User> getActiveUsers() {
+        List<User> results = userRepository.findActiveUsers(
+                scholarshipOriginationService.getScholarshipOriginationRegion());
+        return results;
+    }
+
+    @RequestMapping(value = "/confirmChangePasswd", method = RequestMethod.POST)
+    public boolean confirmChangePasswd(Principal principle, @RequestBody ChangePasswdModal changePasswdModel) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        User loginUser = userRepository.findByUserName(principle.getName());
+        // if the provided current password match password in the db for the
+        // user, then reset the password to new one provided.
+        if (passwordEncoder.matches(changePasswdModel.getCurrentPasswd(), loginUser.getPasswordHash())) {
+            // if
+            // (loginUser.getPasswordHash().equals(changePasswdModel.getCurrentPasswd()))
+            // {
+            loginUser.setPasswordHash(passwordEncoder.encode(changePasswdModel.getNewPasswd()));
+            userRepository.save(loginUser);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
     // Process form submission from forgotPassword page
-	@RequestMapping(value = "/forgotPasswd", method = RequestMethod.POST)
-	public boolean processForgotPasswordForm(@RequestParam("email") String userEmail, HttpServletRequest request) {
+    @RequestMapping(value = "/forgotPasswd", method = RequestMethod.POST)
+    public boolean processForgotPasswordForm(@RequestParam("email") String userEmail, HttpServletRequest request) {
 
-		// Lookup user in database by e-mail
-		Optional<User> optional = userRepository.findByUserEmail(userEmail);
+        // Lookup user in database by e-mail
+        Optional<User> optional = userRepository.findByUserEmail(userEmail);
 
-		if (!optional.isPresent() ) {
-			return false;
-			//modelAndView.addObject("errorMessage", "We didn't find an account for that e-mail address.");
-		} else {
-			
-			User user = optional.get();
-			
-			if (!user.isAccountNonExpired()) {
-				return false;
-			} else {
-			
-				// Generate random 36-character string token for reset password 			
-				user.setResetToken(UUID.randomUUID().toString());
-	
-				// Save token to database
-				userRepository.save(user);
-	
-				String appUrl = request.getScheme() + "://" + request.getServerName();
-				
-				// Email message
-				String emailMessage = "<p>We received a request to reset the account associated with this e-mail address. If you made this request, please follow the instructions below.</p>" 
-						+"<p>&nbsp;</p>"
-						+"<p>If you did not request to have your account reset, you can ignore this email.</p>"
-						+"<p>&nbsp;&nbsp;&nbsp;</p>"
-						+"<p>&nbsp;</p>"
-						+"<p>Password Reset Instruction:</p>"
-						+"<p>To reset your password, click the link below:</p>"
-						+"<p>"
-						+"<a href=\""+ appUrl + "/eduMain.html#!/reset/" + user.getResetToken() +"\">"
-						+ appUrl + "/eduMain.html#!/reset/" + user.getResetToken() + "</a></p>";
-				
-				String emailSubject = "Password Reset Instructions";
-				try {
-					mailService.sendMail(userEmail, emailMessage, false, emailSubject);
-				} catch(Exception ex){
-					logger.error(ex.getMessage());
-				}			
-				
-				// Add success message to view
-				return true;
-			}
-		}
-	}
-	
-	// Process reset password form
-	@RequestMapping(value = "/resetPasswd", method = RequestMethod.POST)
-	public boolean setNewPassword( @RequestParam("token") String token, @RequestParam("newPass") String newPasswd) {
-		BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-		// Find the user associated with the reset token
-		Optional<User> optional = userRepository.findByResetToken(token);
-		
-		// This should always be non-null but we check just in case
-		if (optional.isPresent()) {
-			
-			User resetUser = optional.get(); 
-            
-			// Set new password    
-			resetUser.setPasswordHash(passwordEncoder.encode(newPasswd));
-            
-			// Set the reset token to null so it cannot be used again
-			resetUser.setResetToken(null);
+        if (!optional.isPresent()) {
+            return false;
+            //modelAndView.addObject("errorMessage", "We didn't find an account for that e-mail address.");
+        } else {
 
-			// Save user
-			userRepository.save(resetUser);
+            User user = optional.get();
 
-			return true;
-			
-		} else {
-			return false;	
-		}
-		
-   }
-   	
+            if (!user.isAccountNonExpired()) {
+                return false;
+            } else {
 
-	@RequestMapping(value = "/loadMyEduApplications", method = RequestMethod.GET)
-	public List<Eduapplication> loadMyEduApplications(Principal principal) {
-		// session.setAttribute("userName", principal.getName());
-		String user = principal.getName();
-		List<Eduapplication> results = eduapplicationRepository.findByEduappProcessDetailReviewerAndRegion(user,
-				scholarshipOriginationService.getScholarshipOriginationRegion());
-		return results;
+                // Generate random 36-character string token for reset password
+                user.setResetToken(UUID.randomUUID().toString());
 
-	}
-	
+                // Save token to database
+                userRepository.save(user);
+
+                String appUrl = request.getScheme() + "://" + request.getServerName();
+
+                // Email message
+                String emailMessage = "<p>We received a request to reset the account associated with this e-mail address. If you made this request, please follow the instructions below.</p>"
+                        + "<p>&nbsp;</p>"
+                        + "<p>If you did not request to have your account reset, you can ignore this email.</p>"
+                        + "<p>&nbsp;&nbsp;&nbsp;</p>"
+                        + "<p>&nbsp;</p>"
+                        + "<p>Password Reset Instruction:</p>"
+                        + "<p>To reset your password, click the link below:</p>"
+                        + "<p>"
+                        + "<a href=\"" + appUrl + "/eduMain.html#!/reset/" + user.getResetToken() + "\">"
+                        + appUrl + "/eduMain.html#!/reset/" + user.getResetToken() + "</a></p>";
+
+                String emailSubject = "Password Reset Instructions";
+                try {
+                    mailService.sendMail(userEmail, emailMessage, false, emailSubject);
+                } catch (Exception ex) {
+                    logger.error(ex.getMessage());
+                }
+
+                // Add success message to view
+                return true;
+            }
+        }
+    }
+
+    // Process reset password form
+    @RequestMapping(value = "/resetPasswd", method = RequestMethod.POST)
+    public boolean setNewPassword(@RequestParam("token") String token, @RequestParam("newPass") String newPasswd) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        // Find the user associated with the reset token
+        Optional<User> optional = userRepository.findByResetToken(token);
+
+        // This should always be non-null but we check just in case
+        if (optional.isPresent()) {
+
+            User resetUser = optional.get();
+
+            // Set new password
+            resetUser.setPasswordHash(passwordEncoder.encode(newPasswd));
+
+            // Set the reset token to null so it cannot be used again
+            resetUser.setResetToken(null);
+
+            // Save user
+            userRepository.save(resetUser);
+
+            return true;
+
+        } else {
+            return false;
+        }
+
+    }
 
 
-	@RequestMapping(value = "/loadEduApplication", method = RequestMethod.GET)
-	public ArrayList loadEduApplication(@RequestParam("applId") long applID) {
-		ArrayList results = new ArrayList();
-		Eduapplication eduApp = eduapplicationRepository.findOne(applID);
-		List<Eduapplication> potentialDup = eduapplicationRepository.findPossibleDuplicate(applID,
-				eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail(),
-				eduApp.getFirstName(), eduApp.getLastName(), eduApp.getFathersName(), eduApp.getMothersName(),
-				scholarshipOriginationService.getScholarshipOriginationRegion());
-		List<Eduapplication> potentialOtherYearApps = eduapplicationRepository.findPossibleApplicantOtherYearApps(
-				eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail(),
-				scholarshipOriginationService.getScholarshipOriginationRegion()
-		// ,eduApp.getFirstName()
-		);
-		List<Eduapplication> potentialDupAcrossRegions = eduapplicationRepository.findPossibleDuplicateAcrossRegions(
-				applID,eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail(),
-				eduApp.getFirstName(), eduApp.getLastName(), eduApp.getFathersName(), eduApp.getMothersName(),
-				scholarshipOriginationService.getScholarshipOriginationRegion());
+    @RequestMapping(value = "/loadMyEduApplications", method = RequestMethod.GET)
+    public List<Eduapplication> loadMyEduApplications(Principal principal) {
+        // session.setAttribute("userName", principal.getName());
+        String user = principal.getName();
+        List<Eduapplication> results = eduapplicationRepository.findByEduappProcessDetailReviewerAndRegion(user,
+                scholarshipOriginationService.getScholarshipOriginationRegion());
+        return results;
 
-		results.add(0, eduApp);
-		results.add(1, potentialDup);
-		results.add(2, potentialOtherYearApps);
-		results.add(3, potentialDupAcrossRegions);
-		return results;
-	}
+    }
 
-	@RequestMapping(value = "/loadNewEduApplications", method = RequestMethod.GET)
-	public List<Eduapplication> loadNewEduApplications() {
-		List<Eduapplication> results = eduapplicationRepository.findByEduappProcessDetailProcessingStatus("New",
-				scholarshipOriginationService.getScholarshipOriginationRegion());
-		return results;
-	}
 
-	@RequestMapping(value = "/memberSearchApplication", method = RequestMethod.POST)
-	public List<Eduapplication> memberSearchApplication(@RequestParam("searchNameIdEmail") String searchNameIdEmail) {
+    @RequestMapping(value = "/loadEduApplication", method = RequestMethod.GET)
+    public ArrayList loadEduApplication(@RequestParam("applId") long applID) {
+        ArrayList results = new ArrayList();
+        Eduapplication eduApp = eduapplicationRepository.findOne(applID);
+        List<Eduapplication> potentialDup = eduapplicationRepository.findPossibleDuplicate(applID,
+                eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail(),
+                eduApp.getFirstName(), eduApp.getLastName(), eduApp.getFathersName(), eduApp.getMothersName(),
+                scholarshipOriginationService.getScholarshipOriginationRegion());
+        List<Eduapplication> potentialOtherYearApps = eduapplicationRepository.findPossibleApplicantOtherYearApps(
+                eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail(),
+                scholarshipOriginationService.getScholarshipOriginationRegion()
+                // ,eduApp.getFirstName()
+        );
+        List<Eduapplication> potentialDupAcrossRegions = eduapplicationRepository.findPossibleDuplicateAcrossRegions(
+                applID, eduApp.getStudentId(), eduApp.getApplicationYear(), eduApp.getBirthdate(), eduApp.getEmail(),
+                eduApp.getFirstName(), eduApp.getLastName(), eduApp.getFathersName(), eduApp.getMothersName(),
+                scholarshipOriginationService.getScholarshipOriginationRegion());
 
-		List<Eduapplication> results = null;
-		if (!searchNameIdEmail.equals("")) {
-			results = eduapplicationRepository.findByNameIdEmail("%" + searchNameIdEmail + "%", searchNameIdEmail
-					, scholarshipOriginationService.getScholarshipOriginationRegion());
-		}
-		return results;
-	}
+        results.add(0, eduApp);
+        results.add(1, potentialDup);
+        results.add(2, potentialOtherYearApps);
+        results.add(3, potentialDupAcrossRegions);
+        return results;
+    }
 
-	@PreAuthorize("hasAuthority('admin')")
-	@RequestMapping(value = "/searchEduApplication", method = RequestMethod.POST)
-	public List<Eduapplication> searchEduApplication(@RequestParam("searchAppYear") String searchAppYear,
-			@RequestParam("searchReviewer") String searchReviewer,
-			@RequestParam("searchNameIdEmail") String searchNameIdEmail) {
-		String region = scholarshipOriginationService.getScholarshipOriginationRegion();
-		// List<Eduapplication> results =
-		// eduapplicationRepository.findByFirstNameLike("Ab%");
-		// List<Eduapplication> results =
-		// eduapplicationRepository.findByFirstNameLike("Som%");
+    @RequestMapping(value = "/loadNewEduApplications", method = RequestMethod.GET)
+    public List<Eduapplication> loadNewEduApplications() {
+        List<Eduapplication> results = eduapplicationRepository.findByEduappProcessDetailProcessingStatus("New",
+                scholarshipOriginationService.getScholarshipOriginationRegion());
+        return results;
+    }
 
-		List<Eduapplication> results = null;
-		if (!searchNameIdEmail.equals("")) {
-			results = eduapplicationRepository.findByNameIdEmail("%" + searchNameIdEmail + "%", searchNameIdEmail, region);
-		} else if (!searchAppYear.equals("") && !searchReviewer.equals("")) {
-			results = eduapplicationRepository.findByApplicationYearAndEduappProcessDetailReviewerAndRegion(searchAppYear,
-					searchReviewer, region);
-		} else if (!searchAppYear.equals("")) {
-			results = eduapplicationRepository.findByApplicationYearAndRegion(searchAppYear, region);
-		} else if (!searchReviewer.equals("")) {
-			results = eduapplicationRepository.findByEduappProcessDetailReviewerAndRegion(searchReviewer, region);
-		}
-		return results;
-	}
+    @RequestMapping(value = "/memberSearchApplication", method = RequestMethod.POST)
+    public List<Eduapplication> memberSearchApplication(@RequestParam("searchNameIdEmail") String searchNameIdEmail) {
 
-	// Bulk update of processing details
-	@RequestMapping(value = "/submitEduApplProcessDetails", method = RequestMethod.POST)
-	public void submitEduApplProcessDetails(@RequestBody List<Eduapplication> eduApps) {
-		eduapplicationRepository.save(eduApps);
-	}
+        List<Eduapplication> results = null;
+        if (!searchNameIdEmail.equals("")) {
+            results = eduapplicationRepository.findByNameIdEmail("%" + searchNameIdEmail + "%", searchNameIdEmail
+                    , scholarshipOriginationService.getScholarshipOriginationRegion());
+        }
+        return results;
+    }
 
-	@RequestMapping(value = "/submitEduApplProcessDetail", method = RequestMethod.POST)
-	public void submitEduApplProcessDetail(@RequestBody EduappProcessDetail processDetail) {
-		eduappProcesDetailRepository.save(processDetail);
-	}
+    @PreAuthorize("hasAuthority('admin')")
+    @RequestMapping(value = "/searchEduApplication", method = RequestMethod.POST)
+    public List<Eduapplication> searchEduApplication(@RequestParam("searchAppYear") String searchAppYear,
+                                                     @RequestParam("searchReviewer") String searchReviewer,
+                                                     @RequestParam("searchNameIdEmail") String searchNameIdEmail) {
+        String region = scholarshipOriginationService.getScholarshipOriginationRegion();
+        // List<Eduapplication> results =
+        // eduapplicationRepository.findByFirstNameLike("Ab%");
+        // List<Eduapplication> results =
+        // eduapplicationRepository.findByFirstNameLike("Som%");
 
-	private class StatusData {
-		public String statusMsg;
-	}
+        List<Eduapplication> results = null;
+        if (!searchNameIdEmail.equals("")) {
+            results = eduapplicationRepository.findByNameIdEmail("%" + searchNameIdEmail + "%", searchNameIdEmail, region);
+        } else if (!searchAppYear.equals("") && !searchReviewer.equals("")) {
+            results = eduapplicationRepository.findByApplicationYearAndEduappProcessDetailReviewerAndRegion(searchAppYear,
+                    searchReviewer, region);
+        } else if (!searchAppYear.equals("")) {
+            results = eduapplicationRepository.findByApplicationYearAndRegion(searchAppYear, region);
+        } else if (!searchReviewer.equals("")) {
+            results = eduapplicationRepository.findByEduappProcessDetailReviewerAndRegion(searchReviewer, region);
+        }
+        return results;
+    }
 
-	@RequestMapping(value = "/public/checkApplicationStatus", method = RequestMethod.POST)
-	public StatusData checkApplicationStatus(
-			@RequestParam("option") String option, @RequestParam("confirmationNmbr") String confirmationNmbr,
-			@RequestParam("studentId") String studentId, @RequestParam("birthDate") String birthDate) {
+    // Bulk update of processing details
+    @RequestMapping(value = "/submitEduApplProcessDetails", method = RequestMethod.POST)
+    public void submitEduApplProcessDetails(@RequestBody List<Eduapplication> eduApps) {
+        eduapplicationRepository.save(eduApps);
+    }
 
-		List<EduappProcessDetail> appProcessingDetail = null;
+    @RequestMapping(value = "/submitEduApplProcessDetail", method = RequestMethod.POST)
+    public void submitEduApplProcessDetail(@RequestBody EduappProcessDetail processDetail) {
+        eduappProcesDetailRepository.save(processDetail);
+    }
 
-		if (confirmationNmbr != null && confirmationNmbr.length() > 0) {
-			appProcessingDetail = eduappProcesDetailRepository.findByApplicationNmbr(confirmationNmbr,
-					scholarshipOriginationService.getScholarshipOriginationRegion());
-		} else {
-			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-			Date dob = null;
-			try {
-				dob = formatter.parse(birthDate);
-			} catch (Exception ex) {
-			}
-			;
-			appProcessingDetail = eduappProcesDetailRepository.findByStudentIdAndBirthdate(studentId, dob,
-					scholarshipOriginationService.getScholarshipOriginationRegion());
-		}
-		
-		List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
-				scholarshipOriginationService.getScholarshipOriginationRegion());
-		String  currentYear = eduappConfigList.get(0).getAppYear();
-		String nextYear = (new Integer(Integer.parseInt(currentYear) + 1)).toString();
+    private class StatusData {
+        public String statusMsg;
+    }
 
-		StatusData statusData = new StatusData();
-			//If the application exists for the current academic year
-		if (appProcessingDetail.size() > 0 && 
-				appProcessingDetail.get(0).getEduapplication().getApplicationYear().equals(currentYear)) {
-			switch (appProcessingDetail.get(0).getProcessingStatus()) {
-			case "New":
-			case "Assigned":
-			case "RecommendReject":
-				statusData.statusMsg = "Application Received:  "+ scholarshipOriginationService.getScholarshipOriginationLabel() 
-				        +" has successfully received your application for education scholarship. "
-						+ "All completed applications will be reviewed by Selection Committee in next few months. Status will be "
-						+ "updated periodically during the review period (Review In Progress/Approved/Awarded/Rejected). "
-						+ "Scholarship awards for candidates will be notified within couple of months after approval";
-				break;
-			case "Rejected":
-				statusData.statusMsg = "Thank you  for applying to the "+ scholarshipOriginationService.getScholarshipOriginationLabel() 
-				+" Education Assistance program. We are sorry to inform you that your application has not been selected for a scholarship at this time."
-				+ " We encourage you to apply again next year. All the best. Use "+ scholarshipOriginationService.getEmail() +" for all of your correspondence.";
-				break;
-			case "ReviewComplete":
-				statusData.statusMsg = "Application Review InProgress:  Status will be "  
-						+ "updated periodically during the review period (Review In Progress/Approved/Awarded/Rejected). "  
-				        + "Scholarship awards for candidates will be notified within couple of months after approval";
-				break;
-			case "Approved":
-				statusData.statusMsg = "Application Approved: Congratulations! Your application is approved for Scholarship.";
-				break;
-			case "Awarded":
-				statusData.statusMsg = "Scholarship Awarded: Congratulations! Your scholarship award is being credited to your bank account."
-						+ " Please check your bank account and email us at "+ scholarshipOriginationService.getEmail() +" to confirm that you have received the money.";
-				break;
-			default:
-				statusData.statusMsg = "";
-				break;
-			}
-		} else {
-			statusData.statusMsg = "No matching application found for this academic year. "
-					+ "Email "+ scholarshipOriginationService.getEmail() +" for all of your correspondence.";
-		}
+    @RequestMapping(value = "/public/checkApplicationStatus", method = RequestMethod.POST)
+    public StatusData checkApplicationStatus(
+            @RequestParam("option") String option, @RequestParam("confirmationNmbr") String confirmationNmbr,
+            @RequestParam("studentId") String studentId, @RequestParam("birthDate") String birthDate) {
 
-		return statusData;
-	}
-	
-	
+        List<EduappProcessDetail> appProcessingDetail = null;
+
+        if (confirmationNmbr != null && confirmationNmbr.length() > 0) {
+            appProcessingDetail = eduappProcesDetailRepository.findByApplicationNmbr(confirmationNmbr,
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
+        } else {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date dob = null;
+            try {
+                dob = formatter.parse(birthDate);
+            } catch (Exception ex) {
+            }
+            appProcessingDetail = eduappProcesDetailRepository.findByStudentIdAndBirthdate(studentId, dob,
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
+        }
+
+        List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+                scholarshipOriginationService.getScholarshipOriginationRegion());
+        String currentYear = eduappConfigList.get(0).getAppYear();
+        String nextYear = (new Integer(Integer.parseInt(currentYear) + 1)).toString();
+
+        StatusData statusData = new StatusData();
+        //If the application exists for the current academic year
+        if (appProcessingDetail.size() > 0 &&
+                appProcessingDetail.get(0).getEduapplication().getApplicationYear().equals(currentYear)) {
+            switch (appProcessingDetail.get(0).getProcessingStatus()) {
+                case "New":
+                case "Assigned":
+                case "RecommendReject":
+                    statusData.statusMsg = "Application Received:  " + scholarshipOriginationService.getScholarshipOriginationLabel()
+                            + " has successfully received your application for education scholarship. "
+                            + "All completed applications will be reviewed by Selection Committee in next few months. Status will be "
+                            + "updated periodically during the review period (Review In Progress/Approved/Awarded/Rejected). "
+                            + "Scholarship awards for candidates will be notified within couple of months after approval";
+                    break;
+                case "Rejected":
+                    statusData.statusMsg = "Thank you  for applying to the " + scholarshipOriginationService.getScholarshipOriginationLabel()
+                            + " Education Assistance program. We are sorry to inform you that your application has not been selected for a scholarship at this time."
+                            + " We encourage you to apply again next year. All the best. Use " + scholarshipOriginationService.getEmail() + " for all of your correspondence.";
+                    break;
+                case "ReviewComplete":
+                    statusData.statusMsg = "Application Review InProgress:  Status will be "
+                            + "updated periodically during the review period (Review In Progress/Approved/Awarded/Rejected). "
+                            + "Scholarship awards for candidates will be notified within couple of months after approval";
+                    break;
+
+                case "Approved":
+                    statusData.statusMsg = "Congratulations! Your " + currentYear + "-" + nextYear + " scholarship application is approved." +
+                            " Further information on the size of your award will be updated at this link shortly..";
+                    break;
+                case "Awarded":
+                    statusData.statusMsg = "Congratulations! " + scholarshipOriginationService.getScholarshipOriginationLabel() +
+                            " pleased to inform you, that your College Scholarships program application for the year " + currentYear + "-" + nextYear + " was approved. " +
+                            "Your award amount of " + scholarshipOriginationService.getCurrencyLabel() + "" + appProcessingDetail.get(0).getAwardAmount() + " is anticipated " +
+                            "to be distributed before the end of March " + nextYear + ".";
+                    break;
+                default:
+                    statusData.statusMsg = "";
+                    break;
+            }
+        } else {
+            statusData.statusMsg = "No matching application found for this academic year. "
+                    + "Email " + scholarshipOriginationService.getEmail() + " for all of your correspondence.";
+        }
+
+        return statusData;
+    }
+
+
 //////////////////////////////////Report data request methods/////////////////////////////////
-	
-	@RequestMapping(value = "/getOverAllProgress", method = RequestMethod.GET)
-	public List<ReviewerProgress> getOverAllProgress(@RequestParam(value="applicationYear", required = false) String applicationYear) {
 
-		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
-					scholarshipOriginationService.getScholarshipOriginationRegion());
-			applicationYear = eduappConfigList.get(0).getAppYear();			
-		}
+    @RequestMapping(value = "/getOverAllProgress", method = RequestMethod.GET)
+    public List<ReviewerProgress> getOverAllProgress(@RequestParam(value = "applicationYear", required = false) String applicationYear) {
 
-		Query q = em.createNativeQuery("select 'All' reviewer, sum(CASEwhen (isnull(review_complete, 'N') = 'N',1 , 0)) AS \"Assigned_Count\"," //Pending count
-			+ "sum(CASEwhen (review_complete = 'Y',1 , 0))  AS \"Completed_Count\""
-			 + " from EDUAPP_PROCESS_DETAIL A"
-			+ " inner join EDUAPPLICATION B on A.EDUAPP_ID = B.ID "
-			+ "where B.APPLICATION_YEAR = " + applicationYear + " and B.REGION = '"
-			+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'", ReviewerProgress.class);
-		List<ReviewerProgress> results = q.getResultList();
-		return results;
+        if (applicationYear == null || applicationYear.equals("")) {
+            List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
+            applicationYear = eduappConfigList.get(0).getAppYear();
+        }
 
-	}		
-	
-	@RequestMapping(value = "/getReviewerProgress", method = RequestMethod.GET)
-	public List<ReviewerProgress> getReviewerProgress(@RequestParam(value="applicationYear", required = false) String applicationYear) {
+        Query q = em.createNativeQuery("select 'All' reviewer, sum(CASEwhen (isnull(review_complete, 'N') = 'N',1 , 0)) AS \"Assigned_Count\"," //Pending count
+                + "sum(CASEwhen (review_complete = 'Y',1 , 0))  AS \"Completed_Count\""
+                + " from EDUAPP_PROCESS_DETAIL A"
+                + " inner join EDUAPPLICATION B on A.EDUAPP_ID = B.ID "
+                + "where B.APPLICATION_YEAR = " + applicationYear + " and B.REGION = '"
+                + scholarshipOriginationService.getScholarshipOriginationRegion() + "'", ReviewerProgress.class);
+        List<ReviewerProgress> results = q.getResultList();
+        return results;
 
-		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
-					scholarshipOriginationService.getScholarshipOriginationRegion());
-			applicationYear = eduappConfigList.get(0).getAppYear();			
-		}
-		Query q = em.createNativeQuery("select isNull(REVIEWER, '-UnSelected') reviewer, count(*) AS \"Assigned_Count\","
-			+ " sum(CASEwhen (review_complete = 'Y',1 , 0))  AS \"Completed_Count\" "
-			+ " from EDUAPP_PROCESS_DETAIL A "
-			+ "inner join EDUAPPLICATION B on A.EDUAPP_ID = B.ID "
-			+ "where B.APPLICATION_YEAR = " + applicationYear + " and B.REGION = '"
-			+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
-			+ "group by REVIEWER "
-			+ "order by REVIEWER", ReviewerProgress.class);
-		List<ReviewerProgress> results = q.getResultList();
-		return results;
+    }
 
-	}
-	
-	@RequestMapping(value = "/getRptCityData", method = RequestMethod.GET)
-	public List<CatagoryReportData> getRptCityData(@RequestParam(value="applicationYear", required = false) String applicationYear) {
+    @RequestMapping(value = "/getReviewerProgress", method = RequestMethod.GET)
+    public List<ReviewerProgress> getReviewerProgress(@RequestParam(value = "applicationYear", required = false) String applicationYear) {
 
-		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
-					scholarshipOriginationService.getScholarshipOriginationRegion());
-			applicationYear = eduappConfigList.get(0).getAppYear();			
-		}
-		
-		Query q = em.createNativeQuery("select top 10 CITY \"catagory\", count(*) as \"count\" from EDUAPPLICATION "
-				+ "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
-				+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
-				+ "group by CITY "
-				+ "order by 2 desc, 1", CatagoryReportData.class);
-		List<CatagoryReportData> results = q.getResultList();
-		return results;
-	}	
-	
-	@RequestMapping(value = "/getRptNativeData", method = RequestMethod.GET)
-	public List<CatagoryReportData> getRptNativeData(@RequestParam(value="applicationYear", required = false) String applicationYear) {
+        if (applicationYear == null || applicationYear.equals("")) {
+            List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
+            applicationYear = eduappConfigList.get(0).getAppYear();
+        }
+        Query q = em.createNativeQuery("select isNull(REVIEWER, '-UnSelected') reviewer, count(*) AS \"Assigned_Count\","
+                + " sum(CASEwhen (review_complete = 'Y',1 , 0))  AS \"Completed_Count\" "
+                + " from EDUAPP_PROCESS_DETAIL A "
+                + "inner join EDUAPPLICATION B on A.EDUAPP_ID = B.ID "
+                + "where B.APPLICATION_YEAR = " + applicationYear + " and B.REGION = '"
+                + scholarshipOriginationService.getScholarshipOriginationRegion() + "'"
+                + "group by REVIEWER "
+                + "order by REVIEWER", ReviewerProgress.class);
+        List<ReviewerProgress> results = q.getResultList();
+        return results;
 
-		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
-					scholarshipOriginationService.getScholarshipOriginationRegion());
-			applicationYear = eduappConfigList.get(0).getAppYear();			
-		}
-		
-		Query q = em.createNativeQuery("select top 10 substring(NATIVE_VILLAGE, instr(NATIVE_VILLAGE,'(')) \"catagory\" , count(*) as \"count\" from EDUAPPLICATION "
-				+ "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
-				+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
-				+ "group by NATIVE_VILLAGE "
-				+ "order by 2 desc, 1", CatagoryReportData.class);
-		List<CatagoryReportData> results = q.getResultList();
-		return results;
-	}		
-		
-	@RequestMapping(value = "/getRptInsCityData", method = RequestMethod.GET)
-	public List<CatagoryReportData> getRptInsCityData(@RequestParam(value="applicationYear", required = false) String applicationYear) {
-		
-		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
-					scholarshipOriginationService.getScholarshipOriginationRegion());
-			applicationYear = eduappConfigList.get(0).getAppYear();			
-		}
-		
-		Query q = em.createNativeQuery("select top 10 isNull(INSTITUTION_CITY,'unKnown') \"catagory\", count(*) as \"count\" from EDUAPPLICATION "
-				+ "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
-				+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
-				+ "group by INSTITUTION_CITY  "
-				+ "order by 2 desc, 1", CatagoryReportData.class);
-		List<CatagoryReportData> results = q.getResultList();
-		return results;
-	}	
-	
-	@RequestMapping(value = "/getRptDegreeData", method = RequestMethod.GET)
-	public List<CatagoryReportData> getRptDegreeData(@RequestParam(value="applicationYear", required = false) String applicationYear) {
-		
-		if (applicationYear == null || applicationYear.equals("")) {
-			List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
-					scholarshipOriginationService.getScholarshipOriginationRegion());
-			applicationYear = eduappConfigList.get(0).getAppYear();			
-		}
-		
-		Query q = em.createNativeQuery("select top 10 UPPER(replace(LTRIM(RTRIM(DEGREE)), '.')) \"catagory\" , count(*) as \"count\" from EDUAPPLICATION "
-				+ "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
-				+ scholarshipOriginationService.getScholarshipOriginationRegion() +"'"
-				+ "group by UPPER(replace(LTRIM(RTRIM(DEGREE)), '.')) "
-				+ "order by 2 desc, 1", CatagoryReportData.class);
-		List<CatagoryReportData> results = q.getResultList();
-		return results;
-	}	
-	
+    }
 
-	
+    @RequestMapping(value = "/getRptCityData", method = RequestMethod.GET)
+    public List<CatagoryReportData> getRptCityData(@RequestParam(value = "applicationYear", required = false) String applicationYear) {
 
-	
+        if (applicationYear == null || applicationYear.equals("")) {
+            List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
+            applicationYear = eduappConfigList.get(0).getAppYear();
+        }
+
+        Query q = em.createNativeQuery("select top 10 CITY \"catagory\", count(*) as \"count\" from EDUAPPLICATION "
+                + "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
+                + scholarshipOriginationService.getScholarshipOriginationRegion() + "'"
+                + "group by CITY "
+                + "order by 2 desc, 1", CatagoryReportData.class);
+        List<CatagoryReportData> results = q.getResultList();
+        return results;
+    }
+
+    @RequestMapping(value = "/getRptNativeData", method = RequestMethod.GET)
+    public List<CatagoryReportData> getRptNativeData(@RequestParam(value = "applicationYear", required = false) String applicationYear) {
+
+        if (applicationYear == null || applicationYear.equals("")) {
+            List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
+            applicationYear = eduappConfigList.get(0).getAppYear();
+        }
+
+        Query q = em.createNativeQuery("select top 10 substring(NATIVE_VILLAGE, instr(NATIVE_VILLAGE,'(')) \"catagory\" , count(*) as \"count\" from EDUAPPLICATION "
+                + "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
+                + scholarshipOriginationService.getScholarshipOriginationRegion() + "'"
+                + "group by NATIVE_VILLAGE "
+                + "order by 2 desc, 1", CatagoryReportData.class);
+        List<CatagoryReportData> results = q.getResultList();
+        return results;
+    }
+
+    @RequestMapping(value = "/getRptInsCityData", method = RequestMethod.GET)
+    public List<CatagoryReportData> getRptInsCityData(@RequestParam(value = "applicationYear", required = false) String applicationYear) {
+
+        if (applicationYear == null || applicationYear.equals("")) {
+            List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
+            applicationYear = eduappConfigList.get(0).getAppYear();
+        }
+
+        Query q = em.createNativeQuery("select top 10 isNull(INSTITUTION_CITY,'unKnown') \"catagory\", count(*) as \"count\" from EDUAPPLICATION "
+                + "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
+                + scholarshipOriginationService.getScholarshipOriginationRegion() + "'"
+                + "group by INSTITUTION_CITY  "
+                + "order by 2 desc, 1", CatagoryReportData.class);
+        List<CatagoryReportData> results = q.getResultList();
+        return results;
+    }
+
+    @RequestMapping(value = "/getRptDegreeData", method = RequestMethod.GET)
+    public List<CatagoryReportData> getRptDegreeData(@RequestParam(value = "applicationYear", required = false) String applicationYear) {
+
+        if (applicationYear == null || applicationYear.equals("")) {
+            List<EduappConfig> eduappConfigList = eduappConfigRepository.findByRegion(
+                    scholarshipOriginationService.getScholarshipOriginationRegion());
+            applicationYear = eduappConfigList.get(0).getAppYear();
+        }
+
+        Query q = em.createNativeQuery("select top 10 UPPER(replace(LTRIM(RTRIM(DEGREE)), '.')) \"catagory\" , count(*) as \"count\" from EDUAPPLICATION "
+                + "where APPLICATION_YEAR = " + applicationYear + " and REGION = '"
+                + scholarshipOriginationService.getScholarshipOriginationRegion() + "'"
+                + "group by UPPER(replace(LTRIM(RTRIM(DEGREE)), '.')) "
+                + "order by 2 desc, 1", CatagoryReportData.class);
+        List<CatagoryReportData> results = q.getResultList();
+        return results;
+    }
+
+
 }

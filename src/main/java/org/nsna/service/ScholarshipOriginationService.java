@@ -14,7 +14,10 @@ public class ScholarshipOriginationService {
 	private  String scholarshipOriginationRegion;	
 
 	@Value("${label}")
-	private  String scholarshipOriginationLabel;	
+	private  String scholarshipOriginationLabel;
+
+	@Value("${currencyLabel}")
+	private String currencyLabel;
 
 	@Value("${portalUsedFromYear}")
 	private  String portalUsedFromYear;	
@@ -64,5 +67,9 @@ public class ScholarshipOriginationService {
 
 	public String gethomePageURL() {
 		return homePageURL;
-	}	
+	}
+
+	public String getCurrencyLabel() {
+		return currencyLabel;
+	}
 }
