@@ -91,6 +91,7 @@ public class Eduapplication implements java.io.Serializable {
 	private BigDecimal recentAggregatePercent;
 	private String recentAggregateIn;
 	private Integer annualTuitionFee;
+	private String annualTuitionExplanation;
 	private Integer nonTuitionFee;
 	private Integer annualFamilyIncome;
 	private String referenceName;
@@ -106,6 +107,7 @@ public class Eduapplication implements java.io.Serializable {
 	private String branchName;
 	private String branchIfscCode;
 	private String bankSwiftCode;
+	private String swiftCodeConfirmation;
 	private String branchAddressLine1;
 	private String branchAddressLine2;
 	private String branchAddressLine3;	
@@ -113,6 +115,7 @@ public class Eduapplication implements java.io.Serializable {
 	private String institutionCity;
 	private String otherScholarships;	
 	private String universityName;
+	private String universityOtherName;
 	private String universityRegisterNmbr;	
 	private Set<EduappAttachment> eduappAttachments = new HashSet<EduappAttachment>(0);
 	private EduappProcessDetail eduappProcessDetail;
@@ -129,12 +132,12 @@ public class Eduapplication implements java.io.Serializable {
 			Short siblingsInSchool, Short siblingsInCollege, String nativeVillage, String kovilPirivu, String email, String phone1,
 			String addressLine1, String addressLine2, String city, String pin, String institutionName, String degree,
 			String specialization, String collegeYear, BigDecimal recentAggregatePercent, String recentAggregateIn,
-			Integer annualTuitionFee, Integer nonTuitionFee, Integer annualFamilyIncome, String referenceName, String referencePhone, String checkToName,
+			Integer annualTuitionFee, String annualTuitionExplanation, Integer nonTuitionFee, Integer annualFamilyIncome, String referenceName, String referencePhone, String checkToName,
 			Character acknowledgement, Date crTs, String remoteAddress, String userName, String accountHolderName,
 			String accountNumber, String bankName, String branchName, String branchIfscCode,
-			String bankSwiftCode, String branchAddressLine1, String branchAddressLine2, String branchAddressLine3,
+			String bankSwiftCode, String swiftCodeConfirmation, String branchAddressLine1, String branchAddressLine2, String branchAddressLine3,
 			Character phoneTypeMobile, String institutionCity, String otherScholarships,
-			String universityName, String universityRegisterNmbr, String region, String selfSupport, Character multiYearFlag,
+			String universityName, String universityOtherName, String universityRegisterNmbr, String region, String selfSupport, Character multiYearFlag,
 			Set<EduappAttachment> eduappAttachments, EduappProcessDetail eduappProcessDetail) {
 		this.studentId = studentId;
 		this.applicationYear = applicationYear;
@@ -169,6 +172,7 @@ public class Eduapplication implements java.io.Serializable {
 		this.recentAggregatePercent = recentAggregatePercent;
 		this.recentAggregateIn = recentAggregateIn;
 		this.annualTuitionFee = annualTuitionFee;
+		this.annualTuitionExplanation = annualTuitionExplanation;
 		this.nonTuitionFee = nonTuitionFee;
 		this.annualFamilyIncome = annualFamilyIncome;
 		this.referenceName = referenceName;
@@ -184,6 +188,7 @@ public class Eduapplication implements java.io.Serializable {
 		this.branchName = branchName;
 		this.branchIfscCode = branchIfscCode;
 		this.setBankSwiftCode(bankSwiftCode);
+		this.swiftCodeConfirmation = swiftCodeConfirmation;
 		this.setBranchAddressLine1(branchAddressLine1);
 		this.setBranchAddressLine2(branchAddressLine2);
 		this.setBranchAddressLine3(branchAddressLine3);
@@ -191,6 +196,7 @@ public class Eduapplication implements java.io.Serializable {
 		this.institutionCity = institutionCity;
 		this.otherScholarships = otherScholarships;		
 		this.universityName = universityName;
+		this.universityOtherName = universityOtherName;
 		this.universityRegisterNmbr = universityRegisterNmbr;		
 		this.eduappAttachments = eduappAttachments;
 		this.eduappProcessDetail = eduappProcessDetail;
@@ -500,6 +506,15 @@ public class Eduapplication implements java.io.Serializable {
 		this.annualTuitionFee = annualTuitionFee;
 	}
 
+	@Column(name = "ANNUAL_TUITION_EXPLANATION")
+	public String getAnnualTuitionExplanation() {
+		return annualTuitionExplanation;
+	}
+
+	public void setAnnualTuitionExplanation(String annualTuitionExplanation) {
+		this.annualTuitionExplanation = annualTuitionExplanation;
+	}
+
 	@Column(name = "NON_TUITION_FEE")
 	public Integer getNonTuitionFee() {
 		return this.nonTuitionFee;
@@ -638,7 +653,16 @@ public class Eduapplication implements java.io.Serializable {
 		this.bankSwiftCode = bankSwiftCode;
 	}
 
-	@Column(name = "BRANCH_ADDRESS_LINE1", length = 35)	
+	@Column(name = "BANK_SWIFT_CONFIRMATION", length = 25)
+	public String getSwiftCodeConfirmation() {
+		return swiftCodeConfirmation;
+	}
+
+	public void setSwiftCodeConfirmation(String swiftCodeConfirmation) {
+		this.swiftCodeConfirmation = swiftCodeConfirmation;
+	}
+
+	@Column(name = "BRANCH_ADDRESS_LINE1", length = 35)
 	public String getBranchAddressLine1() {
 		return branchAddressLine1;
 	}
@@ -647,7 +671,7 @@ public class Eduapplication implements java.io.Serializable {
 		this.branchAddressLine1 = branchAddressLine1;
 	}
 
-	@Column(name = "BRANCH_ADDRESS_LINE2", length = 35)	
+	@Column(name = "BRANCH_ADDRESS_LINE2", length = 35)
 	public String getBranchAddressLine2() {
 		return branchAddressLine2;
 	}
@@ -699,6 +723,15 @@ public class Eduapplication implements java.io.Serializable {
 
 	public void setUniversityName(String universityName) {
 		this.universityName = universityName;
+	}
+
+	@Column(name = "UNIVERSITY_OTHER_NAME", length = 120)
+	public String getUniversityOtherName() {
+		return universityOtherName;
+	}
+
+	public void setUniversityOtherName(String universityOtherName) {
+		this.universityOtherName = universityOtherName;
 	}
 
 	@Column(name = "UNIVERSITY_REGISTER_NMBR", length = 15)

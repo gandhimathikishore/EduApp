@@ -1,12 +1,13 @@
 <div class="panel panel-success">
-	<div class="panel-heading">Education & Reference (Reg No.: {{$ctrl.displayAppl.universityRegisterNmbr}})</div>
+	<div class="panel-heading">Education & Reference</div>
 	<div class="panel-body">
 
 		<div class="col-sm-12 text-left">
 			<strong> {{ $ctrl.displayAppl.degree + ' - ' +
 				$ctrl.displayAppl.collegeYear + ' Year' + ' - ' + $ctrl.displayAppl.specialization}}
 				{{$ctrl.displayAppl.institutionName }}, {{$ctrl.displayAppl.institutionCity}}  - 
-				 {{$ctrl.displayAppl.universityName}}<br />
+				 {{$ctrl.displayAppl.universityName}}
+				<span data-ng-hide="$ctrl.displayAppl.universityName == 'Others'">({{$ctrl.displayAppl.universityOtherName}})</span> <br />
 			</strong>
 		</div>
 		<br />
@@ -68,6 +69,14 @@
 				<div class="col-sm-5">Non Tuition Fee:</div>
 				<div class="col-sm-3">
 					<strong>(₹.) {{$ctrl.displayAppl.nonTuitionFee}}.00 </strong>
+				</div>
+			</div>
+			<div class="row row-eq-height">
+				<div class="col-sm-5">Explain if difference between
+					claimed tuition amount & the uploaded receipt:</div>
+				<div class="col-sm-5">
+					<strong data-ng-show="$ctrl.displayAppl.annualTuitionExplanation.length != 0">{{$ctrl.displayAppl.annualTuitionExplanation}} </strong>
+					<strong data-ng-show="$ctrl.displayAppl.annualTuitionExplanation.length == 0">Not Applicable </strong>
 				</div>
 			</div>
 			<br>			

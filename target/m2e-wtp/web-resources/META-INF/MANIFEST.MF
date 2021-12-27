@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: NSNAEduApp
-Implementation-Version: 1.5.1
-Built-By: valch
-Implementation-Vendor-Id: org.nsna
-Build-Jdk: 1.8.0_211
-Created-By: Maven Integration for Eclipse
-Implementation-Vendor: Pivotal Software, Inc.
-

@@ -152,7 +152,7 @@ public class ReportsController {
 					+ " inner join EDUAPPLICATION on a.EDUAPP_ID = EDUAPPLICATION.ID "
 					+ " where EDUAPPLICATION.APPLICATION_YEAR = (SELECT APP_YEAR FROM EDUAPP_CONFIG WHERE REGION =' "
 					+ scholarshipOriginationService.getScholarshipOriginationRegion()
-					+ "') and a.PROCESSING_STATUS = 'ReviewComplete' and a.REGION = '"
+					+ "') and a.PROCESSING_STATUS = 'ReviewComplete' and EDUAPPLICATION.REGION = '"
 					+ scholarshipOriginationService.getScholarshipOriginationRegion() +"' order by 2 desc",
 					"HighAwardReview");
 		} else {

@@ -27,6 +27,10 @@
 					data-ng-show="sort.column=='nativeVillage'"
 					data-ng-class="{'glyphicon-chevron-up':sort.descending,'glyphicon-chevron-down':!sort.descending}"></span>
 				</th>
+				<th>MY <span class="glyphicon sort-icon"></span>
+				</th>
+				<th>RGP <span class="glyphicon sort-icon"></span>
+				</th>
 				<th
 					data-ng-click="changeSorting('eduappProcessDetail.processingStatus')">Status
 					<span class="glyphicon sort-icon"
@@ -38,7 +42,7 @@
 					<span class="glyphicon sort-icon"
 					data-ng-show="sort.column=='eduappProcessDetail.followupRequired'"
 					data-ng-class="{'glyphicon-chevron-up':sort.descending,'glyphicon-chevron-down':!sort.descending}"></span>
-				</th>				
+				</th>
 				<th data-ng-click="changeSorting('eduappProcessDetail.awardAmount')">Award$
 					<span class="glyphicon sort-icon"
 					data-ng-show="sort.column=='eduappProcessDetail.awardAmount'"
@@ -57,10 +61,14 @@
 				<!-- <td>{{ appl.firstName +' '+ appl.lastName}}</td>  -->
 				<td><a
 					data-ui-sref="appProcessing.processApp({applId: + {{appl.id}} })">{{
-						appl.firstName +' '+ appl.lastName}}</a></td>
+					appl.firstName +' '+ appl.lastName}}</a></td>
 				<td>{{ appl.studentId }}</td>
 				<td>{{ appl.city }}</td>
-				<td>{{appl.nativeVillage }}</td>
+				<td>{{appl.nativeVillage | limitTo: 30 }} {{appl.nativeVillage.length > 30 ? '...' : ''}}</td>
+				<td><span class="glyphicon glyphicon-ok" style="color: #5bc0de" data-ng-show="appl.eduappProcessDetail.returningStudent == 'Y'" title="Recommend to Multiyear"></span></td>
+				<td>
+					<span class="glyphicon glyphicon-ok" style="color: #d9534f" data-ng-show="appl.eduappProcessDetail.reviewerPrefGP" title="Reviewer grace point"></span>
+				</td>
 				<td>{{ appl.eduappProcessDetail.processingStatus }}</td>
 				<td>{{ appl.eduappProcessDetail.followupRequired}}</td>
 				<td>{{ appl.eduappProcessDetail.awardAmount | currency }}</td>
@@ -69,5 +77,5 @@
 		</tbody>
 	</table>
 	<dir-pagination-controls max-size="7" direction-links="true"
-		boundary-links="true"> </dir-pagination-controls>
+							 boundary-links="true"> </dir-pagination-controls>
 </div>
