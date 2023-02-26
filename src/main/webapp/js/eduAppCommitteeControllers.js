@@ -513,7 +513,12 @@ eduApp.controller('reportsCtrl',  function( $scope, $http, $window) {
 		
 		$scope.report4passcode = "";
 	});		
-	
+
+	$scope.applicantsStatusAndBankDetails = function() {
+	    $window.open('/downloadApplicantsStatusAndBankTransferData?passcode=' +	$scope.report5passcode
+            + '&passwd='+$scope.report5passwd);
+    }
+
 	$scope.bankInterfaceDataDownload = function() {
 		$window.open('/downloadAppWithReviewerData?passcode=' +	$scope.report1passcode 
 				+ '&passwd='+$scope.report1passwd

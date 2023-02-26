@@ -6,7 +6,8 @@ eduApp.controller('EduApplicationCtrl', [
 		'$state',
 		'$stateParams',
 		'$filter',
-		function($scope, $http, Upload, $timeout, $state, $stateParams, $filter) {
+		'$rootScope',
+		function($scope, $http, Upload, $timeout, $state, $stateParams, $filter, $rootScope) {
 		
 			// $scope.message = 'welcome';
 			
@@ -759,7 +760,10 @@ eduApp.controller('EduApplicationCtrl', [
 			}, {
 				value : 'Tamil Nadu Fisheries University',
 				text : 'Tamil Nadu Fisheries University'
-			}];	
+			}, {
+			    value : 'Others',
+            	text : 'Others'
+			}];
 
 			$scope.myConfig = {
 				create : true,

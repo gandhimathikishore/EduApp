@@ -458,7 +458,7 @@ public class EduappProcessDetail implements java.io.Serializable {
 		this.pBeneficiaryName = pBeneficiaryName;
 	}
 
-	@Column(name = "P_BENEFICIARY_ADDRESS_LINE1", length = 35)	
+	@Column(name = "P_BENEFICIARY_ADDRESS_LINE1", length = 35)
 	public String getpBeneficiaryAddressLine1() {
 		return pBeneficiaryAddressLine1;
 	}
@@ -467,7 +467,7 @@ public class EduappProcessDetail implements java.io.Serializable {
 		this.pBeneficiaryAddressLine1 = pBeneficiaryAddressLine1;
 	}
 
-	@Column(name = "P_BENEFICIARY_ADDRESS_LINE2", length = 50)	
+	@Column(name = "P_BENEFICIARY_ADDRESS_LINE2", length = 35)
 	public String getpBeneficiaryAddressLine2() {
 		return pBeneficiaryAddressLine2;
 	}

@@ -161,7 +161,7 @@
 					</div>
 					<div class="col-sm-5">
 						<div class="form-group mycheckboxdiv">
-							<label class="control-label" for="reviewerPrefSB">Siblings in school: <input type="checkbox" id="reviewerPrefSB"
+							<label class="control-label" for="reviewerPrefSB">Siblings in school/College: <input type="checkbox" id="reviewerPrefSB"
 								class="pull-right mycheckbox"
 								data-ng-model="appl.eduappProcessDetail.reviewerPrefSB"
 								data-ng-true-value="1" data-ng-false-value="0"
@@ -326,7 +326,7 @@
 		</div>
 		<div class="col-sm-5">
 			<span class="pull-left"> <label class="control-label"
-				for="BeneficiaryAddrLine1">Address Line1*:</label></span>
+				for="BeneficiaryAddrLine1">Applicant Address Line1*:</label></span>
 		</div>
 		<div class="col-sm-7">
 			<input
@@ -339,20 +339,20 @@
 		</div>
 		<div class="col-sm-5">
 			<span class="pull-leftt"> <label class="control-label"
-				for="BeneficiaryAddrLine2">Address Line2:</label></span>
+				for="BeneficiaryAddrLine2">Applicant Address Line2:</label></span>
 		</div>
 		<div class="col-sm-7">
 			<input
 				data-ng-model="appl.eduappProcessDetail.pBeneficiaryAddressLine2"
-				type="text" maxlength="50" class="form-control"
+				type="text" maxlength="35" class="form-control"
 				id="BeneficiaryAddrLine2" name="BeneficiaryAddrLine2" 
 				title="Up to 35 characters "
-				data-custom-validation-error="(appl.eduappProcessDetail.pBeneficiaryAddressLine2).length > 35  ? 
+				data-custom-validation-error="(appl.eduappProcessDetail.pBeneficiaryAddressLine2).length > 35  ?
 	'Max 35 characters' : ''">
 		</div>
 		<div class="col-sm-5">
 			<span class="pull-left"> <label class="control-label"
-				for="BeneficiaryAddrLine3">Address Line3*:</label></span>
+				for="BeneficiaryAddrLine3">Applicant Address Line3*:</label></span>
 		</div>
 		<div class="col-sm-7">
 			<input
